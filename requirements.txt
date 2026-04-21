@@ -1,3 +1,8 @@
 openai
 python-dotenv
 requests
+
+# 4.4 LangGraph 사용을 위한 의존성
+langchain-openai
+langgraph
+langchain-core

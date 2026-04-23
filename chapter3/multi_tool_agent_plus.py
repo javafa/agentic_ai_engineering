@@ -113,7 +113,7 @@ tools = [
 ]
 
 
-# 도구 이름 → 실제 함수 매핑
+# Tool 이름 → 실제 함수 매핑
 tool_map = {
     'get_weather': get_weather,
     'calculate': calculate,
@@ -137,14 +137,14 @@ def run_agent(user_message):
     )
     message = response.choices[0].message
 
-    # 도구 호출이 있으면 전부 실행
+    # Tool 호출이 있으면 전부 실행
     while message.tool_calls:
         messages.append(message)
 
         for tc in message.tool_calls:
             func = tool_map[tc.function.name]
             args = json.loads(tc.function.arguments)
-            print(f'  도구: {tc.function.name}({args})')
+            print(f'  Tool: {tc.function.name}({args})')
 
             result = func(**args)
 

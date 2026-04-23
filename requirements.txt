@@ -6,3 +6,9 @@ requests
 langchain-openai
 langgraph
 langchain-core
+
+# 5.4 ChromaDB 의존성
+chromadb
+
+# 5.6 SQLite Checkpointer
+langgraph-checkpoint-sqlite

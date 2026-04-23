@@ -93,7 +93,7 @@ tools = [
 ]
 
 
-# 도구 이름 → 실제 함수 매핑
+# Tool 이름 → 실제 함수 매핑
 tool_map = {
     'get_weather': get_weather,
     'calculate': calculate,
@@ -116,14 +116,14 @@ def run_agent(user_message):
     )
     message = response.choices[0].message
 
-    # 도구 호출이 있으면 전부 실행
+    # Tool 호출이 있으면 전부 실행
     while message.tool_calls:
         messages.append(message)
 
         for tc in message.tool_calls:
             func = tool_map[tc.function.name]
             args = json.loads(tc.function.arguments)
-            print(f'  도구: {tc.function.name}({args})')
+            print(f'  Tool: {tc.function.name}({args})')
 
             result = func(**args)
 
@@ -153,5 +153,5 @@ def run_agent(user_message):
 # 메모 저장
 # run_agent('내일 오후 3시에 치과 예약이야. 메모해줘')
 
-# 복합 질문: 도구 두 개를 연속으로 사용
+# 복합 질문: Tool 두 개를 연속으로 사용
 run_agent('도쿄 날씨 알려주고, 기억해둬')

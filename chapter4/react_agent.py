@@ -130,7 +130,7 @@ def run_react_agent(user_message, max_iterations=5):
 # 단일 질문
 # run_react_agent('서울 날씨 어때?')
 
-# 복합 질문: 도구 두 개 + 추론
+# 복합 질문: Tool 두 개 + 추론
 # run_react_agent('서울과 도쿄 기온 차이를 계산해줘')
 
 # 복합 질문:

@@ -66,7 +66,7 @@ def run_agent(user_message):
         {'role': 'user', 'content': user_message},
     ]
 
-    # 1단계: LLM에게 질문 + 도구 목록 전송
+    # 1단계: LLM에게 질문 + Tool 목록 전송
     response = client.chat.completions.create(
         model='gpt-4o-mini',
         messages=messages,
@@ -74,19 +74,19 @@ def run_agent(user_message):
     )
     message = response.choices[0].message
 
-    # 2단계: 도구 호출이 있는지 확인
+    # 2단계: Tool 호출이 있는지 확인
     if message.tool_calls:
-        # 도구 호출 요청을 메시지에 추가
+        # Tool 호출 요청을 메시지에 추가
         messages.append(message)
 
         for tool_call in message.tool_calls:
             name = tool_call.function.name
             args = json.loads(tool_call.function.arguments)
-            print(f'도구 호출: {name}({args})')
+            print(f'Tool 호출: {name}({args})')
 
             # 3단계: 실제 함수를 실행
             result = get_weather(**args)
-            print(f'도구 결과: {result}')
+            print(f'Tool 결과: {result}')
 
             # 4단계: 함수 실행 결과를 LLM에게 전송
             messages.append({
@@ -102,7 +102,7 @@ def run_agent(user_message):
         )
         answer = final.choices[0].message.content
     else:
-        # 도구 호출 없이 바로 답변한 경우
+        # Tool 호출 없이 바로 답변한 경우
         answer = message.content
 
     print(f'에이전트: {answer}')

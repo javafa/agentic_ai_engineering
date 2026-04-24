@@ -2,10 +2,14 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
+
 from dotenv import load_dotenv
- 
 load_dotenv()
  
+ #################
+# 1. 문서 로딩과 청킹
+#################
+
 # 문서 준비 (실 프로젝트에서는 TextLoader, PyPDFLoader 등 사용)
 raw_documents = [
     Document(page_content="""AI 에이전트 개발 가이드
@@ -43,3 +47,54 @@ chunks = text_splitter.split_documents(raw_documents)
 print(f"원본 문서 {len(raw_documents)}개 → 청크 {len(chunks)}개")
 for i, chunk in enumerate(chunks):
     print(f"  청크 {i}: {len(chunk.page_content)}자 (출처: {chunk.metadata['source']})")
+
+#################
+# 2. 임베딩과 벡터 DB 저장
+#################
+embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+ 
+# ChromaDB에 생성
+vector_store = Chroma(
+    collection_name="tutorial_docs",
+    embedding_function=embeddings,
+    persist_directory="./chroma_rag_db"  # 디스크에 저장
+)
+
+# DB에 청크 저장
+vector_store.add_documents(documents=chunks)
+ 
+print(f"벡터 DB에 {len(chunks)}개 청크 저장 완료!")
+
+#################
+# 3. 검색과 생성
+#################
+retriever = vector_store.as_retriever(
+    search_type="similarity",
+    search_kwargs={"k": 3}  # 상위 3개 검색
+)
+
+llm = ChatOpenAI(model="gpt-5.4-mini")
+ 
+def naive_rag(question: str) -> str:
+    """가장 기본적인 RAG 파이프라인"""
+    print(f"질문: {question}")
+    # 관련 문서 검색
+    docs = retriever.invoke(question)
+     # 검색 결과를 컨텍스트로 조합
+    context = "\n\n---\n\n".join(doc.page_content for doc in docs)
+     # LLM에게 컨텍스트와 질문을 함께 전달
+    prompt = f"""다음 문서를 참고하여 질문에 답하세요.
+답변할 수 없는 내용이면 "문서에서 해당 정보를 찾을 수 없습니다"라고 하세요.
+참고 문서:
+{context}
+질문: {question}"""
+ 
+    response = llm.invoke(prompt)
+    return response.content
+ 
+# 테스트
+answer = naive_rag("에이전트의 네 가지 구성 요소는 무엇인가요?")
+print(f"답변: {answer}")
+ 
+answer = naive_rag("임베딩 모델의 차원은 몇인가요?")
+print(f"답변: {answer}")

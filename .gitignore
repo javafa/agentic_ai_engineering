@@ -1,3 +1,7 @@
 .env
-__pycache__
 *.pyc
+*.bin
+*.sqlite3
+
+__pycache__
+chroma_rag_db

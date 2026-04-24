@@ -16,3 +16,11 @@ langgraph-checkpoint-sqlite
 
 # 6 LangChain Structured Outputs
 langchain_ollama
+
+# 7 RAG
+# langchain-openai # exist
+# chromadb # exist
+langchain-chroma 
+langchain-text-splitters
+langchain-community 
+

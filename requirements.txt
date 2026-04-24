@@ -1,3 +1,4 @@
+anthropic
 openai
 python-dotenv
 requests
@@ -12,3 +13,6 @@ chromadb
 
 # 5.6 SQLite Checkpointer
 langgraph-checkpoint-sqlite
+
+# 6 LangChain Structured Outputs
+langchain_ollama

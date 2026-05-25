@@ -1,70 +1,85 @@
-import tiktoken
+from anthropic import Anthropic
 from dotenv import load_dotenv
-from openai import OpenAI
 
 load_dotenv()
-client = OpenAI()
+client = Anthropic()
 
 class SummaryMemory:
     def __init__(self, threshold=3000):
         self.threshold = threshold
         self.messages = []
         self.summary = None
-        self.enc = tiktoken.get_encoding("o200k_base")
-        self.system_msg = {"role": "system", "content": "당신은 친절한 AI 비서입니다."}
+        self.system_prompt = "당신은 친절한 AI 비서입니다."
+
+    def get_system(self):
+        """요약을 포함한 시스템 프롬프트를 반환한다."""
+        if self.summary:
+            return f"{self.system_prompt}\n\n이전 대화 요약: {self.summary}"
+        return self.system_prompt
 
     def _token_count(self, msgs):
-        return sum(len(self.enc.encode(m["content"])) + 4 for m in msgs) + 2
+        """Anthropic count_tokens API로 토큰 수를 계산한다."""
+        if not msgs:
+            return 0
+        return client.messages.count_tokens(
+            model="claude-sonnet-4-5",
+            system=self.get_system(),
+            messages=msgs,
+        ).input_tokens
 
     def add_message(self, role, content):
         self.messages.append({"role": role, "content": content})
-        
-				# 메시지의 수가 threshold 보다 크면 절반은 요약, 나머지는 메시지 목록에 담는다
+
+        # 메시지의 토큰 수가 threshold 보다 크면 절반은 요약, 나머지는 메시지 목록에 담는다
         if self._token_count(self.messages) > self.threshold:
             mid = len(self.messages) // 2
+            # Claude는 user 메시지로 시작해야 하므로 분할 지점을 user 메시지에 맞춘다
+            while mid < len(self.messages) and self.messages[mid]["role"] != "user":
+                mid += 1
             to_sum = "\n".join(f"{m['role']}: {m['content']}" for m in self.messages[:mid])
-            
-            resp = client.chat.completions.create(
-                model="gpt-5.4-mini",
+
+            resp = client.messages.create(
+                model="claude-sonnet-4-5",
+                max_tokens=1024,
+                system="개인정보/결정사항 위주 200단어 이내 요약 전문가",
                 messages=[
-                    {"role": "system", "content": "개인정보/결정사항 위주 200단어 이내 요약 전문가"},
-                    {"role": "user", "content": f"기존 요약: {self.summary}\n추가 대화:\n{to_sum}"}
+                    {"role": "user",
+                     "content": f"기존 요약: {self.summary}\n추가 대화:\n{to_sum}"}
                 ]
             )
-            self.summary = resp.choices[0].message.content
+            self.summary = resp.content[0].text
             self.messages = self.messages[mid:]
 
     def get_messages(self):
-        res = [self.system_msg]
-        if self.summary:
-            res.append({"role": "system", "content": f"이전 대화 요약: {self.summary}"})
-        return res + self.messages
-
+        """Claude에 전달할 최근 대화 메시지 리스트 (요약은 get_system에 포함)"""
+        return self.messages
 
 def chat_with_summary_memory():
     memory = SummaryMemory(threshold=4000)
- 
+
     print("요약 메모리 챗봇입니다. (종료: quit)")
     while True:
         user_input = input("\n사용자: ")
         if user_input.lower() == "quit":
             break
- 
+
         memory.add_message("user", user_input)
- 
-        response = client.chat.completions.create(
-            model="gpt-5.4-mini",
+
+        response = client.messages.create(
+            model="claude-sonnet-4-5",
+            max_tokens=1024,
+            system=memory.get_system(),
             messages=memory.get_messages()
         )
- 
-        assistant_msg = response.choices[0].message.content
+
+        assistant_msg = response.content[0].text
         memory.add_message("assistant", assistant_msg)
         print(f"\nAI: {assistant_msg}")
- 
+
         # 현재 메모리 상태 표시
         if memory.summary:
             print(f"  [요약 존재: {len(memory.summary)}자]")
         print(f"  [활성 메시지: {len(memory.messages)}개]")
- 
+
 if __name__ == "__main__":
     chat_with_summary_memory()

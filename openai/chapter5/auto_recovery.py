@@ -1,8 +1,8 @@
-from anthropic import Anthropic
+from openai import OpenAI
 from pydantic import BaseModel
 import json
  
-client = Anthropic()
+client = OpenAI()
  
 def call_with_recovery(
     messages: list[dict],
@@ -12,17 +12,13 @@ def call_with_recovery(
     """LLM 호출 + Pydantic 검증, 실패 시 자동 재시도"""
  
     for attempt in range(max_retries):
-        system_text = next((m["content"] for m in messages
-                             if m["role"] == "system"), "")
-        chat_msgs = [m for m in messages if m["role"] != "system"]
-        response = client.messages.create(
-            model="claude-sonnet-4-5",
-            max_tokens=1024,
-            system=system_text,
-            messages=chat_msgs
+        response = client.chat.completions.create(
+            model="gpt-5.4-mini",
+            messages=messages,
+            response_format={"type": "json_object"}
         )
-
-        raw = "".join(b.text for b in response.content if b.type == "text")
+ 
+        raw = response.choices[0].message.content
  
         try:
             data = json.loads(raw)
@@ -39,4 +35,3 @@ def call_with_recovery(
  
     print("최대 재시도 횟수 초과")
     return None
-

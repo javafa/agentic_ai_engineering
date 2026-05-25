@@ -1,12 +1,12 @@
 import os, json, requests
 from datetime import datetime
 from dotenv import load_dotenv
-from openai import OpenAI
+from anthropic import Anthropic
 
 load_dotenv()
-client = OpenAI()
+client = Anthropic()
 
-# Tool 1: 날씨 (앞에서 만든 것과 동일)
+# 1. 날씨 (앞에서 만든 것과 동일)
 def get_weather(city: str) -> str:
     """도시의 현재 날씨를 조회합니다."""
     api_key = os.getenv('WEATHER_API_KEY')
@@ -18,8 +18,7 @@ def get_weather(city: str) -> str:
         'description': resp['weather'][0]['description'],
     }, ensure_ascii=False)
 
-
-# Tool 2: 계산기
+# 2. 계산기
 def calculate(expression: str) -> str:
     """수학 계산식을 받아서 결과를 반환합니다."""
     try:
@@ -32,7 +31,7 @@ def calculate(expression: str) -> str:
 # 메모 저장소
 memo_store = []
 
-# Tool 3: 메모 저장
+# 3. 메모 저장
 def save_memo(content: str) -> str:
     """메모를 저장합니다."""
     memo = {
@@ -49,49 +48,39 @@ def save_memo(content: str) -> str:
 # Tool 목록
 tools = [
     {
-        'type': 'function',
-        'function': {
-            'name': 'get_weather',
-            'description': '도시의 현재 날씨를 조회합니다.',
-            'parameters': {
-                'type': 'object',
-                'properties': {
-                    'city': {'type': 'string', 'description': '영문 도시 이름'}
-                },
-                'required': ['city'],
+        'name': 'get_weather',
+        'description': '도시의 현재 날씨를 조회합니다.',
+        'input_schema': {
+            'type': 'object',
+            'properties': {
+                'city': {'type': 'string', 'description': '영문 도시 이름'}
             },
+            'required': ['city'],
         },
     },
     {
-        'type': 'function',
-        'function': {
-            'name': 'calculate',
-            'description': '수학 계산식을 계산합니다. 사칙연산, 거듭제곱 등을 지원합니다.',
-            'parameters': {
-                'type': 'object',
-                'properties': {
-                    'expression': {'type': 'string', 'description': '계산할 수식 (예: 2+3*4)'}
-                },
-                'required': ['expression'],
+        'name': 'calculate',
+        'description': '수학 계산식을 계산합니다. 사칙연산, 거듭제곱 등을 지원합니다.',
+        'input_schema': {
+            'type': 'object',
+            'properties': {
+                'expression': {'type': 'string', 'description': '계산할 수식 (예: 2+3*4)'}
             },
+            'required': ['expression'],
         },
     },
     {
-        'type': 'function',
-        'function': {
-            'name': 'save_memo',
-            'description': '사용자가 기억해달라고 하는 내용을 메모로 저장합니다.',
-            'parameters': {
-                'type': 'object',
-                'properties': {
-                    'content': {'type': 'string', 'description': '저장할 메모 내용'}
-                },
-                'required': ['content'],
+        'name': 'save_memo',
+        'description': '사용자가 기억해달라고 하는 내용을 메모로 저장합니다.',
+        'input_schema': {
+            'type': 'object',
+            'properties': {
+                'content': {'type': 'string', 'description': '저장할 메모 내용'}
             },
+            'required': ['content'],
         },
     },
 ]
-
 
 # Tool 이름 → 실제 함수 매핑
 tool_map = {
@@ -103,45 +92,58 @@ tool_map = {
 def run_agent(user_message):
     print(f'\n사용자: {user_message}')
 
+    system_prompt = '당신은 날씨 조회, 계산, 메모 저장을 할 수 있는 도우미입니다.'
     messages = [
-        {'role': 'system', 'content':
-         '당신은 날씨 조회, 계산, 메모 저장을 할 수 있는 도우미입니다.'},
         {'role': 'user', 'content': user_message},
     ]
 
-    response = client.chat.completions.create(
-        model='gpt-5.4-mini',
+    response = client.messages.create(
+        model='claude-sonnet-4-5',
+        max_tokens=1024,
+        system=system_prompt,
         messages=messages,
         tools=tools,
     )
-    message = response.choices[0].message
 
     # Tool 호출이 있으면 전부 실행
-    while message.tool_calls:
-        messages.append(message)
+    while response.stop_reason == 'tool_use':
+        messages.append({'role': 'assistant', 'content': response.content})
 
-        for tc in message.tool_calls:
-            func = tool_map[tc.function.name]
-            args = json.loads(tc.function.arguments)
-            print(f'  Tool: {tc.function.name}({args})')
+        tool_results = []
+        # 1. 응답의 content 블록을 돌면서
+        for block in response.content:
+            if block.type != 'tool_use':
+                continue
+            # 2. tool_map에 있는 실제 함수를 가져온다
+            func = tool_map[block.name]
+            args = block.input
+            print(f'  Tool: {block.name}({args})')
 
+            # 3. 매핑된 함수를 실행하고 결과값을 얻는다.
             result = func(**args)
 
-            messages.append({
-                'role': 'tool',
-                'tool_call_id': tc.id,
-                'content': result,
+            tool_results.append({
+                'type': 'tool_result',
+                'tool_use_id': block.id,
+                'content': result,   # 4. 결과값을 모은다.
             })
 
-        response = client.chat.completions.create(
-            model='gpt-5.4-mini',
+        # 5. tool_result들을 user 메시지로 추가한다
+        messages.append({'role': 'user', 'content': tool_results})
+
+        # 6. 모든 메시지를 LLM에 보내서 응답을 받는다.
+        response = client.messages.create(
+            model='claude-sonnet-4-5',
+            max_tokens=1024,
+            system=system_prompt,
             messages=messages,
             tools=tools,
         )
-        message = response.choices[0].message
 
-    print(f'에이전트: {message.content}')
-    return message.content
+    # 최종 텍스트 응답을 추출한다
+    final_text = ''.join(b.text for b in response.content if b.type == 'text')
+    print(f'에이전트: {final_text}')
+    return final_text
 
 
 # 날씨 질문

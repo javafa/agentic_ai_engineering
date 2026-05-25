@@ -4,7 +4,6 @@ from langchain_core.tools import tool
 
 from typing import Annotated
 from typing_extensions import TypedDict
-from langchain_anthropic import ChatAnthropic
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
@@ -39,7 +38,7 @@ class State(TypedDict):
     messages: Annotated[list, add_messages]
 
 # 2. LLM 노드
-llm_with_tools = ChatAnthropic(model='claude-sonnet-4-5').bind_tools(
+llm_with_tools = ChatOpenAI(model='gpt-5.4-mini').bind_tools(
     [get_weather, calculate]
 )
 
@@ -61,5 +60,3 @@ agent = graph.compile()
 result = agent.invoke({
     'messages': [{'role': 'user', 'content': '서울 날씨 알려줘'}]
 })
-
-print("실행 결과 =>", result["messages"][-1].pretty_print())

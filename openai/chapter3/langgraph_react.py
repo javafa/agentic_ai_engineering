@@ -1,6 +1,6 @@
 import json, os, requests
 from dotenv import load_dotenv
-from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from langchain_core.tools import tool
 from langgraph.prebuilt import create_react_agent
 
@@ -8,7 +8,7 @@ load_dotenv()
 
 @tool
 def get_weather(city: str) -> str:
-    """도시 이름을 받아 현재 기온과 날씨 설명을 반환합니다. 도시명이 영어가 아닐때는 영어로 변환해서 사용합니다.""" # < description 역할을 한다
+    """도시 이름을 받아 현재 기온과 날씨 설명을 반환합니다. 도시명이 영어가 아닐때는 영어로 변환해서 사용합니다."""
     api_key = os.getenv('WEATHER_API_KEY')
     url = 'http://api.openweathermap.org/data/2.5/weather'
     params = {'q': city, 'appid': api_key, 'units': 'metric', 'lang': 'kr'}
@@ -24,11 +24,11 @@ def get_weather(city: str) -> str:
 
 @tool
 def calculate(expr: str) -> str:
-    """수학 수식을 계산합니다. 예: '18.5 - 15.2'""" # < description 역할
+    """수학 수식을 계산합니다. 예: '18.5 - 15.2'"""
     return eval(expr, {"__builtins__": None}, {})
 
 
-model = ChatAnthropic(model="claude-sonnet-4-5", temperature=0)
+model = ChatOpenAI(model="gpt-5.4-mini", temperature=0)
 tools = [get_weather, calculate]
 agent = create_react_agent(model, tools=tools)
 

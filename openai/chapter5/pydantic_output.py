@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, field_validator
 from langchain_core.output_parsers import PydanticOutputParser
-from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -22,16 +22,16 @@ class TaskPlan(BaseModel):
 parser = PydanticOutputParser(pydantic_object=TaskPlan)
  
 # 파서가 생성한 지시문 확인
-print(parser.get_format_instructions())
+print(f'parsed <--- {parser.get_format_instructions()} --->')
  
 # LLM에게 요청
-structured_llm = ChatAnthropic(model="claude-sonnet-4-5")
+llm = ChatOpenAI(model="gpt-5.4-mini")
 
 prompt = f"""다음 작업의 실행 계획을 세워주세요.
 작업: 블로그 포스트 작성하기
 {parser.get_format_instructions()}"""
- 
-response = structured_llm.invoke(prompt)
+
+response = llm.invoke(prompt)
  
 # 응답을 Pydantic 모델로 파싱 + 검증
 try:

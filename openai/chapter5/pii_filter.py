@@ -37,10 +37,9 @@ class PIIFilter:
         return masked_text, detected
 
 # 테스트
-if __name__ == "__main__":
-    pii_filter = PIIFilter()
-    test_text = "홍길동(800101-1234567)의 번호는 010-9999-8888입니다."
-    masked, types = pii_filter.mask(test_text)
+pii_filter = PIIFilter()
+test_text = "홍길동(800101-1234567)의 번호는 010-9999-8888입니다."
+masked, types = pii_filter.mask(test_text)
 
-    print(f"결과: {masked}")
-    print(f"탐지된 항목: {types}")
+print(f"결과: {masked}")
+print(f"탐지된 항목: {types}")

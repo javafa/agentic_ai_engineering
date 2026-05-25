@@ -1,9 +1,9 @@
 import os, json
 from dotenv import load_dotenv
-from anthropic import Anthropic
+from openai import OpenAI
 
 load_dotenv()
-client = Anthropic()
+client = OpenAI()
 
 REACT_SYSTEM_PROMPT = """
 당신은 Tool을 사용할 수 있는 AI 에이전트입니다.
@@ -45,30 +45,36 @@ tool_map = {
     'calculate': calculate,
 }
 
-# Tool 스키마 (Anthropic 형식)
+# Tool 스키마 (OpenAI 형식)
 tools = [
     {
-        'name': 'get_weather',
-        'description': '도시의 현재 기온, 날씨 상태, 습도를 조회합니다.',
-        'input_schema': {
-            'type': 'object',
-            'properties': {
-                'city': {'type': 'string',
-                         'description': '영문 도시 이름 (예: Seoul, Tokyo)'}
+        'type': 'function',
+        'function': {
+            'name': 'get_weather',
+            'description': '도시의 현재 기온, 날씨 상태, 습도를 조회합니다.',
+            'parameters': {
+                'type': 'object',
+                'properties': {
+                    'city': {'type': 'string',
+                             'description': '영문 도시 이름 (예: Seoul, Tokyo)'}
+                },
+                'required': ['city'],
             },
-            'required': ['city'],
         },
     },
     {
-        'name': 'calculate',
-        'description': '수학 계산식을 평가합니다. 사칙연산, 거듭제곱을 지원합니다.',
-        'input_schema': {
-            'type': 'object',
-            'properties': {
-                'expression': {'type': 'string',
-                               'description': '계산할 수식 (예: 2+3*4)'}
+        'type': 'function',
+        'function': {
+            'name': 'calculate',
+            'description': '수학 계산식을 평가합니다. 사칙연산, 거듭제곱을 지원합니다.',
+            'parameters': {
+                'type': 'object',
+                'properties': {
+                    'expression': {'type': 'string',
+                                   'description': '계산할 수식 (예: 2+3*4)'}
+                },
+                'required': ['expression'],
             },
-            'required': ['expression'],
         },
     },
 ]
@@ -79,56 +85,53 @@ def run_react_agent(user_message, max_iterations=5):
     print('='*50)
 
     messages = [
+        {'role': 'system', 'content': REACT_SYSTEM_PROMPT},
         {'role': 'user', 'content': user_message},
     ]
 
     for i in range(max_iterations):
-        response = client.messages.create(
-            model='claude-sonnet-4-5',
-            max_tokens=1024,
-            system=REACT_SYSTEM_PROMPT,
+        response = client.chat.completions.create(
+            model='gpt-5.4-mini',
             messages=messages,
             tools=tools,
         )
+        message = response.choices[0].message
 
-        # Thought 출력 (LLM이 생성한 텍스트 블록)
-        thought = ''.join(b.text for b in response.content if b.type == 'text')
-        if thought:
-            print(f'\n[Thought] {thought}')
+        # Thought 출력 (LLM이 생성한 텍스트)
+        if message.content:
+            print(f'\n[Thought] {message.content}')
 
         # Tool 호출이 없으면 최종 답변
-        if response.stop_reason != 'tool_use':
-            print(f'[Answer] {thought}')
-            return thought
-
+        if not message.tool_calls:
+            print(f'[Answer] {message.content}')
+            return message.content
+        
         # Action: Tool 호출 가져오기
-        messages.append({'role': 'assistant', 'content': response.content})
-        tool_results = []
-        for block in response.content:
-            if block.type != 'tool_use':
-                continue
-            # 선택된 Tool 이름
-            name = block.name
-            args = block.input
+        messages.append(message)
+        for tc in message.tool_calls:
+            name = tc.function.name
+            args = json.loads(tc.function.arguments)
             print(f'[Action] {name}({args})')
 
             # Tool 실행
             result = tool_map[name](**args)
             print(f'[Observation] {result}')
 
-            # 결과를 모은다
-            tool_results.append({
-                'type': 'tool_result',      # Tool 사용 결과 블록
-                'tool_use_id': block.id,    # tool_use 아이디로 매핑한다
+            # 결과를 메시지에 추가
+            messages.append({
+                'role': 'tool', # role 에 tool을 사용해서 도구사용 결과값임을 알려줍니다
+                'tool_call_id': tc.id,
                 'content': result,
             })
-
-        # Tool 결과를 user 메시지로 전달
-        messages.append({'role': 'user', 'content': tool_results})
 
     print('\n[경고] 최대 반복 횟수에 도달했습니다.')
     return '죄송합니다. 처리 중 문제가 발생했습니다.'
 
+# 단일 질문
 # run_react_agent('서울 날씨 어때?')
 
-run_react_agent('서울과 도쿄 기온 차이를 계산해줘')
+# 복합 질문: Tool 두 개 + 추론
+# run_react_agent('서울과 도쿄 기온 차이를 계산해줘')
+
+# 복합 질문:
+run_react_agent('뉴욕 날씨를 섭씨에서 화씨로 변환해줘')

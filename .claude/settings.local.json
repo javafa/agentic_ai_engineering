@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pandoc --track-changes=all \"/Users/donho/books/AgenticAIEngineering/챕터4_claude.docx\" -o /tmp/chapter4.md)",
+      "Read(//tmp/**)",
+      "Bash(python \"/Users/donho/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/08fbace8-679a-4943-bdb5-6fb070aed92f/52d79b19-5109-477e-8a49-980b628e6e8a/skills/docx/scripts/office/unpack.py\" \"/Users/donho/books/AgenticAIEngineering/챕터4_claude.docx\" /tmp/chapter4_unpacked/)",
+      "Bash(which python3 *)",
+      "Bash(python3 '/Users/donho/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/08fbace8-679a-4943-bdb5-6fb070aed92f/52d79b19-5109-477e-8a49-980b628e6e8a/skills/docx/scripts/office/unpack.py' /Users/donho/books/AgenticAIEngineering/챕터4_claude.docx /tmp/chapter4_unpacked/)",
+      "Bash(grep -n \"4\\\\.2\\\\.2\\\\|슬라이딩\\\\|sliding_window\\\\|chat_with_memory\" /tmp/chapter4_unpacked/word/document.xml | head -50)",
+      "Bash(awk 'NR>=10682 && NR<=12500' /tmp/chapter4_unpacked/word/document.xml)",
+      "Bash(awk 'NR>=12500 && NR<=14500' /tmp/chapter4_unpacked/word/document.xml)",
+      "Bash(awk 'NR>=25822 && NR<=26200' /tmp/chapter4_unpacked/word/document.xml)",
+      "Bash(awk 'NR>=29498 && NR<=31500' /tmp/chapter4_unpacked/word/document.xml)",
+      "Bash(awk 'NR>=31300 && NR<=31600' /tmp/chapter4_unpacked/word/document.xml)",
+      "Bash(awk -F: '$1>30464')",
+      "Bash(awk 'NR>=30491 && NR<=31234' /tmp/chapter4_unpacked/word/document.xml)",
+      "Bash(/opt/anaconda3/envs/agentic/bin/pip install *)",
+      "Bash(/opt/anaconda3/envs/agentic/bin/python3 '/Users/donho/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/08fbace8-679a-4943-bdb5-6fb070aed92f/52d79b19-5109-477e-8a49-980b628e6e8a/skills/docx/scripts/office/pack.py' /tmp/chapter4_unpacked/ /Users/donho/books/AgenticAIEngineering/챕터4_claude.docx --original /Users/donho/books/AgenticAIEngineering/챕터4_claude.docx --validate false)",
+      "Bash(/opt/anaconda3/envs/agentic/bin/python3 '/Users/donho/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/08fbace8-679a-4943-bdb5-6fb070aed92f/52d79b19-5109-477e-8a49-980b628e6e8a/skills/docx/scripts/office/unpack.py' /Users/donho/books/AgenticAIEngineering/챕터4_claude.docx /tmp/chapter4_verify/)",
+      "Bash(awk 'NR>=31075 && NR<=32840' /tmp/chapter4_verify/word/document.xml)"
+    ]
+  }
+}

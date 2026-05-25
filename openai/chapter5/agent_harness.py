@@ -1,14 +1,16 @@
-from pii_filter import PIIFilter
-from injection_guard import InjectionGuard
-from cost_guard import CostGuard
-from anthropic import Anthropic
+from openai.chapter5.pii_filter import PIIFilter
+from openai.chapter5.injection_guard import InjectionGuard
+from openai.chapter5.cost_guard import CostGuard
+from openai import OpenAI
 import json, time
+from dotenv import load_dotenv
+load_dotenv()
  
 class AgentHarness:
     """에이전트의 입출력을 제어하는 하네스"""
  
     def __init__(self, daily_budget: float = 10.0):
-        self.client = Anthropic()
+        self.client = OpenAI()
         self.pii_filter = PIIFilter()
         self.injection_guard = InjectionGuard()
         self.cost_guard = CostGuard(daily_limit_usd=daily_budget)
@@ -48,36 +50,33 @@ class AgentHarness:
         estimated_tokens = sum(len(m["content"]) // 4 for m in messages)  # 대략적 추정
         ok, msg = self.check_guardrails(estimated_tokens)
         if not ok:
-            return f"[가드레일] {msg}"
+            return f"@가드레일 : {msg}"
  
         # LLM 호출
         start = time.time()
-        system_text = next((m["content"] for m in messages
-                             if m["role"] == "system"), "")
-        chat_msgs = [m for m in messages if m["role"] != "system"]
-        response = self.client.messages.create(
-            model="claude-sonnet-4-5",
-            max_tokens=1024,
-            system=system_text,
-            messages=chat_msgs
+        response = self.client.chat.completions.create(
+            model="gpt-5.4-mini",
+            messages=messages
         )
         elapsed = time.time() - start
-
+ 
         # 사용량 기록
         usage = response.usage
-        self.cost_guard.record(usage.input_tokens, usage.output_tokens)
+        self.cost_guard.record(usage.prompt_tokens, usage.completion_tokens)
         self.call_count += 1
-
+ 
         print(f"[하네스] 호출 #{self.call_count} | "
-              f"토큰: {usage.input_tokens}+{usage.output_tokens} | "
+              f"토큰: {usage.prompt_tokens}+{usage.completion_tokens} | "
               f"시간: {elapsed:.2f}s | "
               f"일일비용: ${self.cost_guard.get_daily_total():.4f}")
+ 
+        return response.choices[0].message.content
 
-        return "".join(b.text for b in response.content if b.type == "text")
 
+# 실행 및 테스트 예제 시나리오
 if __name__ == "__main__":
     # 하네스 초기화 (일일 예산을 아주 작게 설정)
-    harness = AgentHarness(daily_budget=0.5)
+    harness = AgentHarness(daily_budget=0.004)
     
     test_inputs = [
         "안녕하세요, 오늘 날씨가 어떤가요?", # 시나리오 1: 정상 요청

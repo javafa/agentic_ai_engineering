@@ -2,10 +2,11 @@ import os
 import json
 import requests
 from dotenv import load_dotenv
-from openai import OpenAI
+from anthropic import Anthropic
 
-load_dotenv()
-client = OpenAI()
+load_dotenv()     # 환경 변수 로딩
+client = Anthropic() # Anthropic 클라이언트 초기화
+
 
 """도시 이름을 받아서 현재 날씨를 반환하는 함수"""
 def get_weather(city: str) -> str:
@@ -36,77 +37,86 @@ def get_weather(city: str) -> str:
         'humidity': data['main']['humidity'],
     }, ensure_ascii=False)
 
+"""Tool 목록"""
 tools = [
     {
-        'type': 'function',
-        'function': {
-            'name': 'get_weather',
-            'description': '도시의 현재 날씨를 조회합니다.',
-            'parameters': {
-                'type': 'object',
-                'properties': {
-                    'city': {
-                        'type': 'string',
-                        'description': '날씨를 조회할 도시 이름 (영문)',
-                    }
-                },
-                'required': ['city'],
+        'name': 'get_weather',
+        'description': '도시의 현재 날씨를 조회합니다.',
+        'input_schema': {
+            'type': 'object',
+            'properties': {
+                'city': {
+                    'type': 'string',
+                    'description': '날씨를 조회할 도시 이름 (영문)',
+                }
             },
+            'required': ['city'],
         },
     }
 ]
+
 
 """에이전트를 실행하는 함수"""
 def run_agent(user_message):
     print(f'사용자: {user_message}')
     
-    # LLM 에 전달하는 기본 메시지 세트
+    # 시스템 프롬프트와 LLM에 전달하는 기본 메시지
+    system_prompt = '당신은 날씨 정보를 알려주는 도우미입니다.'
     messages = [
-        {'role': 'system', 'content': '당신은 날씨 정보를 알려주는 도우미입니다.'},
         {'role': 'user', 'content': user_message},
     ]
 
-    # 1단계: LLM에게 질문 + Tool 목록 전송
-    response = client.chat.completions.create(
-        model='gpt-4o-mini',
+    # 1. LLM에게 질문 + Tool 목록 전송
+    response = client.messages.create(
+        model='claude-sonnet-4-5',
+        max_tokens=1024,
+        system=system_prompt,
         messages=messages,
         tools=tools,
     )
-    message = response.choices[0].message
 
-    # 2단계: Tool 호출이 있는지 확인
-    if message.tool_calls:
-        # Tool 호출 요청을 메시지에 추가
-        messages.append(message)
+    # 2. Tool 호출이 있는지 확인 (stop_reason)
+    if response.stop_reason == 'tool_use':
+        # Tool 호출이 포함된 응답을 메시지에 추가
+        messages.append({'role': 'assistant', 'content': response.content})
 
-        for tool_call in message.tool_calls:
-            name = tool_call.function.name
-            args = json.loads(tool_call.function.arguments)
+        tool_results = []
+        for block in response.content:
+            if block.type != 'tool_use':
+                continue
+            name = block.name
+            args = block.input        # 이미 dict 형태 (json.loads 불필요)
             print(f'Tool 호출: {name}({args})')
 
-            # 3단계: 실제 함수를 실행
+            # 3. 실제 함수를 실행
             result = get_weather(**args)
             print(f'Tool 결과: {result}')
 
-            # 4단계: 함수 실행 결과를 LLM에게 전송
-            messages.append({
-                'role': 'tool',
-                'tool_call_id': tool_call.id,
+            # 4. 함수 실행 결과를 모은다
+            tool_results.append({
+                'type': 'tool_result',
+                'tool_use_id': block.id,
                 'content': result,
             })
 
-        # 5단계: LLM이 최종 답변 생성
-        final = client.chat.completions.create(
-            model='gpt-4o-mini',
+        # Tool 결과를 user 메시지로 전달
+        messages.append({'role': 'user', 'content': tool_results})
+
+        # 5. LLM이 최종 답변 생성
+        final = client.messages.create(
+            model='claude-sonnet-4-5',
+            max_tokens=1024,
+            system=system_prompt,
             messages=messages,
         )
-        answer = final.choices[0].message.content
+        answer = final.content[0].text
     else:
         # Tool 호출 없이 바로 답변한 경우
-        answer = message.content
+        answer = response.content[0].text
 
     print(f'에이전트: {answer}')
     return answer
+
 
 if __name__ == '__main__':
     run_agent('도쿄랑 뉴욕 날씨 비교해줘')

@@ -2,23 +2,28 @@ anthropic
 openai
 python-dotenv
 requests
+voyageai
 
-# 4.4 LangGraph 사용을 위한 의존성
+# 4 의존성
+chromadb
 langchain-anthropic
 langchain-openai
 langgraph
 langchain-core
+langchain-voyageai
+langchain-chroma
+langchain-text-splitters
+langchain-community
 
-# 5.4 ChromaDB 의존성
-chromadb
 
-# 5.6 SQLite Checkpointer
+# 4.5 SQLite Checkpointer
 langgraph-checkpoint-sqlite
 
-# 6 LangChain Structured Outputs
+# 5 LangChain Structured Outputs
 langchain_ollama
+networkx
 
-# 7 RAG
+# 6 RAG
 # langchain-openai # exist
 # chromadb # exist
 langchain-chroma 

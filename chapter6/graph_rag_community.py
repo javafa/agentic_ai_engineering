@@ -81,7 +81,7 @@ llm = ChatAnthropic(model="claude-sonnet-4-5")
 
 def summarize_community(community: set) -> str:
     """커뮤니티에 속한 엔티티와 관계를 LLM으로 요약한다."""
-    # 군집 내부의 관계(엣지)만 수집한다
+    # 커뮤니티 내부의 관계(엣지)만 수집한다
     facts = []
     for src, tgt, data in graph.edges(data=True):
         if src in community and tgt in community:
@@ -90,8 +90,8 @@ def summarize_community(community: set) -> str:
     if not facts:                       # 관계가 없으면 엔티티 목록만 사용
         facts = [f"엔티티: {', '.join(sorted(community))}"]
 
-    prompt = f"""다음은 지식 그래프의 한 군집에 속한 엔티티와 관계입니다.
-이 군집이 다루는 핵심 주제를 2~3문장으로 요약하세요.
+    prompt = f"""다음은 지식 그래프의 한 커뮤니티에 속한 엔티티와 관계입니다.
+이 커뮤니티가 다루는 핵심 주제를 2~3문장으로 요약하세요.
 
 {chr(10).join(facts)}
 
@@ -114,7 +114,7 @@ def global_search(question: str) -> str:
     )
 
     # 2. 요약 전체를 근거로 최종 답변을 생성한다
-    prompt = f"""아래는 문서 전체를 군집별로 요약한 보고서입니다.
+    prompt = f"""아래는 문서 전체를 커뮤니티별로 요약한 보고서입니다.
 이 보고서들을 종합하여 질문에 답하세요.
 
 {context}

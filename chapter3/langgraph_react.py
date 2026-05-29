@@ -2,7 +2,7 @@ import json, os, requests
 from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic
 from langchain_core.tools import tool
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 
 load_dotenv()
 
@@ -30,7 +30,7 @@ def calculate(expr: str) -> str:
 
 model = ChatAnthropic(model="claude-sonnet-4-5", temperature=0)
 tools = [get_weather, calculate]
-agent = create_react_agent(model, tools=tools)
+agent = create_agent(model, tools=tools)
 
 inputs = {"messages": [("user", "서울과 도쿄 기온 차이 알려줘")]}
 

@@ -1,32 +1,29 @@
+# ── 공통 SDK ──
 anthropic
 openai
 python-dotenv
 requests
-voyageai
 
-# 4 의존성
-chromadb
-langchain-anthropic
-langchain-openai
-langgraph
-langchain-core
-langchain-voyageai
-langchain-chroma
-langchain-text-splitters
-langchain-community
+# ── LangChain v1 코어 ──
+langchain>=1.0            # create_agent 가 여기 있음 (원래 목록에 빠져 있었음)
+langchain-core>=1.0
+langgraph>=1.0
+langchain-anthropic>=1.0
+langchain-openai>=1.0
 
-
-# 4.5 SQLite Checkpointer
+# ── 4.5 SQLite Checkpointer ──
 langgraph-checkpoint-sqlite
 
-# 5 LangChain Structured Outputs
-langchain_ollama
+# ── 5 Structured Outputs ──
+langchain-ollama>=1.0
 networkx
 
-# 6 RAG
-# langchain-openai # exist
-# chromadb # exist
-langchain-chroma 
-langchain-text-splitters
-langchain-community 
+# ── 6 RAG (Chroma) ──
+chromadb
+langchain-chroma>=1.0
+langchain-text-splitters>=1.0
+langchain-community>=0.4   # 내부적으로 langchain-classic 을 끌어옴
 
+# ── 임베딩: VoyageAI ──
+langchain-voyageai
+voyageai

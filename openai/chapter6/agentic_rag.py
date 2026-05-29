@@ -2,7 +2,7 @@ import os
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.tools import tool
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 from langgraph.checkpoint.memory import MemorySaver
 from dotenv import load_dotenv
  
@@ -55,11 +55,11 @@ SYSTEM_PROMPT = """당신은 기술 문서 기반 질의응답 에이전트입�
 4. 반드시 검색된 문서에 기반해서만 답변하세요.
 5. 문서에 없는 내용은 "문서에서 확인할 수 없습니다"라고 답하세요."""
  
-agent = create_react_agent(
+agent = create_agent(
     llm,
     [search_docs, search_with_filter],
     checkpointer=memory,
-    prompt=SYSTEM_PROMPT
+    system_prompt=SYSTEM_PROMPT
 )
  
 # 실행

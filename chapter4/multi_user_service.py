@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic
 from langchain_core.tools import tool
 from langgraph.checkpoint.sqlite import SqliteSaver
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 
 load_dotenv()
 
@@ -49,7 +49,7 @@ class ChatService:
         # 서비스 시작 시 한 번만 DB를 연다 (요청마다 열고 닫지 않는다)
         self._memory_cm = SqliteSaver.from_conn_string(self.db_path)
         memory = self._memory_cm.__enter__()
-        self.agent = create_react_agent(
+        self.agent = create_agent(
             self.model, self.tools, checkpointer=memory
         )
         return self

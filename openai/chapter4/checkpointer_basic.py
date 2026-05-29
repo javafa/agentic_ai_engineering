@@ -1,5 +1,5 @@
 from langgraph.checkpoint.memory import MemorySaver
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 from langchain_core.tools import tool
 
@@ -18,7 +18,7 @@ memory = MemorySaver()
  
 # 에이전트에 Checkpointer 연결
 llm = ChatOpenAI(model="gpt-5.4-mini")
-agent = create_react_agent(llm, [get_weather], checkpointer=memory)
+agent = create_agent(llm, [get_weather], checkpointer=memory)
  
 # 핵심: thread_id로 대화를 구분합니다
 config1 = {"configurable": {"thread_id": "user_A_session_1"}}

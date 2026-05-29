@@ -1,11 +1,11 @@
 from langgraph.checkpoint.sqlite import SqliteSaver
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
  
 # SQLite 파일에 상태 저장
 with SqliteSaver.from_conn_string("agent_state.db") as checkpointer:
     llm = ChatOpenAI(model="gpt-5.4-mini")
-    agent = create_react_agent(llm, tools=[], checkpointer=checkpointer)
+    agent = create_agent(llm, tools=[], checkpointer=checkpointer)
  
     config = {"configurable": {"thread_id": "session_001"}}
  
@@ -20,7 +20,7 @@ with SqliteSaver.from_conn_string("agent_state.db") as checkpointer:
  
 with SqliteSaver.from_conn_string("agent_state.db") as checkpointer:
     llm = ChatOpenAI(model="gpt-5.4-mini")
-    agent = create_react_agent(llm, tools=[], checkpointer=checkpointer)
+    agent = create_agent(llm, tools=[], checkpointer=checkpointer)
  
     config = {"configurable": {"thread_id": "session_001"}}
  

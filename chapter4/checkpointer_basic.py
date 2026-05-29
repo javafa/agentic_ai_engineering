@@ -1,5 +1,5 @@
 from langgraph.checkpoint.memory import MemorySaver
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 from langchain_anthropic import ChatAnthropic
 from langchain_core.tools import tool
 
@@ -18,7 +18,7 @@ memory = MemorySaver()
 
 # 에이전트에 체크포인터 연결
 llm = ChatAnthropic(model="claude-sonnet-4-5")
-agent = create_react_agent(llm, [get_weather], checkpointer=memory)
+agent = create_agent(llm, [get_weather], checkpointer=memory)
 
 # thread_id로 대화 구분
 config1 = {"configurable": {"thread_id": "user_A_session_1"}}

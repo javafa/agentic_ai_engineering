@@ -1,7 +1,7 @@
 from langchain_anthropic import ChatAnthropic
 from langchain_core.tools import tool
 from langgraph.checkpoint.sqlite import SqliteSaver
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 from dotenv import load_dotenv
 import datetime
 
@@ -18,7 +18,7 @@ def build_agent(memory):
     """SQLite 체크포인터와 Tool을 연결한 ReAct 에이전트를 생성한다."""
     model = ChatAnthropic(model="claude-sonnet-4-5")
     tools = [get_current_time]
-    return create_react_agent(model, tools, checkpointer=memory)
+    return create_agent(model, tools, checkpointer=memory)
 
 # 3) 사용자별 thread_id로 메시지를 보내고 답변을 받는 함수
 def chat(agent, user_id: str, message: str) -> str:

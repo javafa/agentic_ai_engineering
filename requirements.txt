@@ -27,3 +27,12 @@ langchain-community>=0.4   # 내부적으로 langchain-classic 을 끌어옴
 # ── 임베딩: VoyageAI ──
 langchain-voyageai
 voyageai
+
+# 9 Stock Man
+# langgraph
+# langchain-anthropic
+finance-datareader         # KRX·해외 지수·환율·개별 종목 (오픈소스, API 키 불필요)
+feedparser                 # 구글 뉴스 RSS 파싱 (오픈소스)
+# requests                 # 슬랙 Webhook · 카카오 메시지 API 호출
+# python-dotenv            # .env 로 비밀값 관리
+APScheduler                # 매일 아침 자동 실행 (운영화 단계)

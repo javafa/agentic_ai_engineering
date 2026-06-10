@@ -8,7 +8,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.tools import tool
 from dotenv import load_dotenv
 
-load_dotenv(override=True)
+load_dotenv() # .env 환경변수 로드
 
 # 1) 상태 정의
 class State(TypedDict):

@@ -9,28 +9,6 @@ from langchain_anthropic import ChatAnthropic
 from dotenv import load_dotenv
 load_dotenv()
 
-# 0) 로그 헬퍼 — 모든 노드가 이 한 곳을 통해 찍어 톤을 통일한다.
-#    depth로 계층(오케스트레이터=0, 팀 내부 워커=1)을 들여쓰기로 표현.
-#    형식: {들여쓰기}[노드명(12)] EVENT(8) 메시지
-def log(name: str, event: str, message: str = "", depth: int = 0):
-    if message:
-        message = message.replace("\n", " ").strip()
-        if len(message) > 120:
-            message = message[:117] + "..."
-    indent = "  " * depth
-    print(f"{indent}[{name:<12}] {event:<8} {message}")
-
-
-# 0-1) prefill 가드 — messages가 assistant(AI) 턴으로 끝나면, 모델이 그걸
-#      이어쓰기(prefill)로 오해하지 않도록 중립적인 user 턴을 일회성으로 덧붙인다.
-#      (state에 저장하지 않으며, 마지막이 human/tool 턴이면 그대로 반환)
-def ensure_user_last(messages: list) -> list:
-    if messages and getattr(messages[-1], "type", None) == "ai":
-        return [*messages, {"role": "user",
-                            "content": "위 진행 상황을 바탕으로 당신의 역할에 맞게 다음 단계를 수행하세요."}]
-    return messages
-
-
 # 1) 상태 정의
 class TopState(TypedDict):
     messages: Annotated[list, add_messages]
@@ -50,7 +28,7 @@ class DevTeamState(TeamState):
     pending_review: bool    # 이번 코드가 아직 리뷰 안 됨
     revision_count: int     # 수정 반복 횟수
 
-# 2) 라우팅 스키마 정의
+# 라우팅 스키마 정의
 class OrchestratorDecision(BaseModel):
     reasoning: str
     next_team: Literal["research_team", "dev_team", "FINISH"]
@@ -59,12 +37,29 @@ class ResearchRouteDecision(BaseModel):
     reasoning: str
     next_worker: Literal["searcher", "analyzer"]
 
-# 리뷰 판단(진짜 LLM 결정이 일어나는 지점)
-class ReviewResult(BaseModel):
+# 리뷰 판단을 위한 스키마
+class ReviewResultDecision(BaseModel):
     approved: bool = Field(description="코드가 충분히 좋아 더 수정이 필요 없으면 True")
     feedback: str = Field(description="수정이 필요하면 구체적 지적, 승인이면 간단한 총평")
 
-# 3) Tool 정의 - 9.3 섹션의 코드 재사용
+# 2) 유틸리티 정의
+# 2-1) 로그 헬퍼 — 형식: {들여쓰기}[노드명(12)] EVENT(8) 메시지
+def log(name: str, event: str, message: str = "", depth: int = 0):
+    if message:
+        message = message.replace("\n", " ").strip()
+        if len(message) > 120:
+            message = message[:117] + "..."
+    indent = "  " * depth
+    print(f"{indent}[{name:<12}] {event:<8} {message}")
+
+# 2-2) prefill 가드 — state에 저장하지 않으며, 마지막이 human/tool 턴이면 그대로 반환
+def ensure_user_last(messages: list) -> list:
+    if messages and getattr(messages[-1], "type", None) == "ai":
+        return [*messages, {"role": "user",
+                            "content": "위 진행 상황을 바탕으로 당신의 역할에 맞게 다음 단계를 수행하세요."}]
+    return messages
+
+# 3) Tool 정의
 @tool
 def web_search(query: str) -> str:
     """웹에서 정보를 검색합니다."""
@@ -82,10 +77,10 @@ def write_code(description: str, language: str = "python") -> str:
     """요구사항에 따라 코드를 작성합니다."""
     return f"{language}\n# {description}에 대한 코드\nprint('Hello from generated code')\n"
 
-# 4) 모델과 상수
+# 4) 모델과 상수 - 빠른 응답 확인을 위해 더 작은 모델로 변경
 llm = ChatAnthropic(model="claude-haiku-4-5")
 MAX_ROUNDS = 8
-MAX_REVISIONS = 2   # 개발 팀 수정 루프 상한
+MAX_REVISIONS = 2   # 개발 팀 수정 루프 횟수 상한
 
 # 5) 리서치 팀 구현 — 본질적으로 선형(검색 → 분석)
 def build_research_team():
@@ -232,17 +227,17 @@ def build_dev_team():
         })
 
     def reviewer(state: DevTeamState) -> Command:
-        """코드 리뷰 워커: 승인/수정 여부를 구조화 출력으로 판단(진짜 LLM 결정 지점)"""
-        review_llm = llm.with_structured_output(ReviewResult)
+        """코드 리뷰 워커: 승인/수정 여부를 구조화 출력으로 판단"""
+        review_llm = llm.with_structured_output(ReviewResultDecision)
         try:
-            verdict: ReviewResult = review_llm.invoke([
+            decision: ReviewResultDecision = review_llm.invoke([
                 {"role": "system", "content":
                  "당신은 코드 리뷰어입니다. 코드를 검토해 승인 여부를 판단하세요. "
                  "수정이 필요하면 approved=False와 함께 구체적 개선 지적을, "
                  "충분하면 approved=True와 간단한 총평을 작성하세요."},
                 *ensure_user_last(state["messages"])
             ])
-            approved, feedback = verdict.approved, verdict.feedback
+            approved, feedback = decision.approved, decision.feedback
         except Exception:
             # 파싱 실패 시 보수적으로 승인 처리(무한 루프 방지)
             approved, feedback = True, "리뷰 파싱 실패 — 자동 승인 처리"

@@ -8,7 +8,7 @@ from langgraph.types import Command
 from langchain_anthropic import ChatAnthropic
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv() # .env 환경변수 로드
 
 MAX_HANDOFFS = 5
 
@@ -56,7 +56,7 @@ def run_agent(state, system_prompt, allowed_routes, agent_name):
 
     # 다음 에이전트 선택
     sys = system_prompt + (f"\n\n[이전 에이전트 인계 메모]: {note}" if note else "")
-		# Prefill 에러 방지
+	# Prefill 에러 방지
     msgs = state["messages"]
     if msgs and getattr(msgs[-1], "type", None) == "ai":
         msgs = [*msgs, {"role": "user", "content": "위 내용을 바탕으로 답변과 다음 에이전트를 결정하세요."}]
@@ -86,7 +86,7 @@ def run_agent(state, system_prompt, allowed_routes, agent_name):
         }
     )
 
-
+# 5) 워커 에이전트
 def general_support(state: State) -> Command[Literal["tech_support", "billing", "__end__"]]:
     return run_agent(state,
         system_prompt="""당신은 일반 고객 상담원입니다.

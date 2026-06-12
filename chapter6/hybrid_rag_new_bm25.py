@@ -1,25 +1,21 @@
+from typing import List
+
+from langchain_core.retrievers import BaseRetriever
+import numpy as np
+from pydantic import Field
+from rank_bm25 import BM25Okapi
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.retrievers.bm25 import BM25Retriever # 키워드기반 검색
 from langchain_classic.retrievers.ensemble import EnsembleRetriever       # 복수 Retriever의 순위 통합
 from langchain_core.documents import Document
 from langchain_chroma import Chroma
 from langchain_voyageai import VoyageAIEmbeddings
 from dotenv import load_dotenv
- 
-load_dotenv()
 
-
-# kiwi 를 활용해 한국어를 토큰화한다.
-# 차이 
-# 1. query.lower().split() 사용시 - 띄어쓰기 단위. 영어에 최적화
-# [ "voyage", "ai의", "voyage-3", "모델의", "벡터", "차원은?" ]
-# 2. kiwi tokenizer 사용 시 - 조사까지 분해 해준다
-# [ "Voyage", "AI", "의", "voyage-3", "모델", "의", "벡터", "차원", "은", "?" ]
 # 한국어 토크나이저
 from kiwipiepy import Kiwi
 kiwi = Kiwi()
-def tokenize(text):
-    return [token.form for token in kiwi.tokenize(text)]
+ 
+load_dotenv()
 
 # 6.2 에서 작성한 코드의 앞부분 사용 > raw_documents, text_splitter, chunks
 # 문서 준비 (실 프로젝트에서는 TextLoader, PyPDFLoader 등 사용)
@@ -56,12 +52,46 @@ text_splitter = RecursiveCharacterTextSplitter(
  
 chunks = text_splitter.split_documents(raw_documents)
 
+# BM25 Retriever 구현 - langchain community 이슈 및 한국어 토큰 처리
+# kiwi 를 활용해 한국어를 토큰화한다.
+# 차이 
+# 1. query.lower().split() 사용시 - 띄어쓰기 단위. 영어에 최적화
+# [ "voyage", "ai의", "voyage-3", "모델의", "벡터", "차원은?" ]
+# 2. kiwi tokenizer 사용 시 - 조사까지 분해 해준다
+# [ "Voyage", "AI", "의", "voyage-3", "모델", "의", "벡터", "차원", "은", "?" ]
 
-# 문서 조각(chunks) 객체를 바탕으로 BM25 인덱스 생성
-bm25_retriever = BM25Retriever.from_documents(chunks, preprocess_func=tokenize)
+def tokenize(text):
+    return [token.form for token in kiwi.tokenize(text)]
 
-# 키워드 검색 시 반환할 결과 문서의 개수 지정
-bm25_retriever.k = 3
+class BM25Retriever(BaseRetriever):
+    docs: List[Document]
+    k: int = 4
+    bm25: BM25Okapi = Field(exclude=True)
+
+    @classmethod
+    def from_documents(cls, docs: List[Document], k: int = 4):
+        tokenized_corpus = [
+            tokenize(doc.page_content)
+            for doc in docs
+        ]
+        bm25 = BM25Okapi(tokenized_corpus)
+        return cls(
+            docs=docs,
+            bm25=bm25,
+            k=k
+        )
+
+    def _get_relevant_documents(self, query: str) -> List[Document]:
+        scores = self.bm25.get_scores(
+            tokenize(query)
+        )
+        top_indices = np.argsort(scores)[::-1][: self.k]
+        return [self.docs[i] for i in top_indices]
+
+bm25_retriever = BM25Retriever.from_documents(
+    chunks, # 문서 조각(chunks) 객체를 바탕으로 BM25 인덱스 생성
+    k=3 # 키워드 검색 시 반환할 결과 문서의 개수 지정
+)
 
 # 임베딩 모델 설정 (기존에 사용한 모델과 동일해야 함)
 embeddings = VoyageAIEmbeddings(model="voyage-3")

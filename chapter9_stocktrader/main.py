@@ -115,7 +115,6 @@ def write_briefing(state: BriefingState) -> dict:
 # 5) 전송 노드
 def _kakao_digest(briefing_md: str, date: str) -> str:
     """브리핑에서 '한 줄 요약' 섹션만 뽑아 카카오용 단문(≤200자)으로 만듭니다."""
-    log.info("main._kakao_digest:")
     summary, capture = [], False
     for ln in briefing_md.splitlines():
         if ln.strip().startswith("## 한 줄 요약"):
@@ -132,7 +131,7 @@ def _kakao_digest(briefing_md: str, date: str) -> str:
  
  
 def send_briefing(state: BriefingState) -> dict:
-    log.info("main.send_briefing: 전송 시작")
+    log.info("전송 시작")
     body = state["briefing_md"]
     # 수집 단계에서 누적된 경고가 있으면 본문 끝에 투명하게 덧붙입니다.
     if state.get("errors"):

@@ -4,25 +4,26 @@ openai
 python-dotenv
 requests
 
-# ── LangChain v1 코어 ──
-langchain>=1.0            # create_agent 가 여기 있음 (원래 목록에 빠져 있었음)
-langchain-core>=1.0
-langgraph>=1.0
-langchain-anthropic>=1.0
-langchain-openai>=1.0
+# ── LangChain 코어 ──
+langchain            # create_agent 가 여기 있음 (원래 목록에 빠져 있었음)
+langchain-core
+langgraph
+langchain-anthropic
+langchain-openai
 
 # ── 4.5 SQLite Checkpointer ──
 langgraph-checkpoint-sqlite
 
 # ── 5 Structured Outputs ──
-langchain-ollama>=1.0
+langchain-ollama
 networkx
 
 # ── 6 RAG (Chroma) ──
 chromadb
-langchain-chroma>=1.0
-langchain-text-splitters>=1.0
-langchain-community>=0.4   # 내부적으로 langchain-classic 을 끌어옴
+langchain-chroma
+langchain-text-splitters
+langchain-community   # 내부적으로 langchain-classic 을 끌어옴
+rank_bm25
 
 # ── 임베딩: VoyageAI ──
 langchain-voyageai

@@ -25,7 +25,6 @@ def _refresh_kakao_token(rest_api_key: str, client_secret: str, refresh_token: s
         "client_secret": client_secret
     }
     r = requests.post(KAKAO_TOKEN_URL, data=data, timeout=10)
-    print("access_token", r)
     r.raise_for_status()
     return r.json()["access_token"]
 

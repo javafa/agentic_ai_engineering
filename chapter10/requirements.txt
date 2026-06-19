@@ -1,25 +1,12 @@
-# --- LangGraph / LLM ---
 langgraph                 # 순환 그래프, Checkpointer, interrupt(휴먼인더루프)
 langchain-anthropic       # ChatAnthropic — Claude 호출
 anthropic                 # langchain-anthropic 백엔드(자동 설치)
- 
-# --- 데이터 / 분석 엔진 ---
 duckdb                    # 임베디드 SQL 엔진 (httpfs 확장은 실행 시 자동 다운로드)
 pandas                    # 데이터프레임
 matplotlib                # 차트 생성(PNG)
- 
-# --- 코드 실행기(영속 IPython 커널) ---
 jupyter-client            # KernelManager / KernelClient
 ipykernel                 # 실제 IPython 커널 — 없으면 커널이 동작 안함
- 
-# --- 검토 / 구조화 출력 ---
 pydantic                  # Review 모델(with_structured_output)
- 
-# --- 외부 API ---
 requests                  # Open-Meteo 과거 날씨 API 호출
- 
-# --- 환경변수 로딩 ---
 python-dotenv             # .env 의 ANTHROPIC_API_KEY 로드
- 
-# --- 타입 ---
 typing-extensions         # TypedDict (state.py); Python 3.10 호환용

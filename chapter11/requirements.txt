@@ -1,0 +1,6 @@
+langgraph                 # 순환 그래프, Checkpointer, interrupt(휴먼인더루프)
+langchain-anthropic       # ChatAnthropic — Claude 호출
+pybullet                  # 오픈소스 물리 시뮬레이터 (API 키 불필요) — macOS(Apple Silicon)는 README.md 설치 안내 먼저 참고
+pillow                    # 카메라 이미지 처리
+numpy
+python-dotenv

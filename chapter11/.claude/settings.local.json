@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sw_vers)",
+      "Bash(clang --version)",
+      "Bash(xcode-select -p)",
+      "Bash(python3 -m pip --version)",
+      "Bash(python3 -m pip index versions pybullet)",
+      "Read(//private/tmp/**)",
+      "Bash(rm -f pybullet_build.log)",
+      "Bash(python3 -m pip install --no-binary :all: --no-cache-dir pybullet)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(python3 -c \"import pybullet; print\\('pybullet', pybullet.getAPIVersion\\(\\)\\)\")",
+      "Bash(python3 -m pip show pybullet)",
+      "Bash(echo \"=== context around first error \\(file being compiled + macro note\\) ===\"; sed -n '7290,7340p' /tmp/pybullet_build.log; echo \"=== what is at _stdio.h:322 ===\"; sed -n '318,324p' /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_stdio.h)",
+      "Bash(python3 -m pip install --force-reinstall /tmp/pb/wheels/pybullet-3.2.7-cp311-cp311-macosx_10_9_universal2.whl)",
+      "Bash(python3 smoke_test.py)",
+      "Bash(printf '%s\\\\n' '#if defined\\(MACOS\\) || defined\\(TARGET_OS_MAC\\)' '#define OS_CODE 0x07')",
+      "Bash(sed -i '' s/__TRACKED_VAR__/__TRACKED_VAR__/ t_zutil.h)",
+      "Bash(rm -f t_zutil.h)"
+    ]
+  }
+}

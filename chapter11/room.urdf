@@ -1,0 +1,13 @@
+<robot name="room">
+  <link name="base"/>
+  <!-- 두께 0.1m, 높이 1m 박스 -->
+  <link name="wall_north">
+    <visual><origin xyz="0 1.5 0.5"/>
+      <geometry><box size="3 0.1 1"/></geometry></visual>
+    <collision><origin xyz="0 1.5 0.5"/>
+      <geometry><box size="3 0.1 1"/></geometry></collision>
+  </link>
+  <joint name="j_north" type="fixed">
+    <parent link="base"/><child link="wall_north"/></joint>
+  <!-- wall_south / wall_east / wall_west 동일 패턴 -->
+</robot>

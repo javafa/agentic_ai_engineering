@@ -23,9 +23,9 @@ def run_eval():
         # 작업 완료 후 물체의 실제 물리 좌표 측정
         final_pos = ROBOT.position_of(c["obj"])
         # 에이전트의 완료 상태 선언과 실제 물리 좌표의 도달 여부를 교차 검증
-        is_success = out["status"] == "success" and near(final, LOCATIONS[c["to"]])
-        rows.append({"q": c["q"], 
-                     "success": ok,
+        is_success = out["status"] == "success" and near(final_pos, LOCATIONS[c["to"]])
+        rows.append({"q": c["q"],
+                     "success": is_success,
                      "steps": out["step_count"], 
                      "recoveries": out["recovery_count"]})
         status_char = 'O' if is_success else 'X'
@@ -40,3 +40,4 @@ def run_eval():
  
 if __name__ == "__main__":
     run_eval()
+    ROBOT.hold_view()       # GUI일 때 마지막 결과 창을 열어둔다 (헤드리스면 무시)

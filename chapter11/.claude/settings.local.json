@@ -17,7 +17,11 @@
       "Bash(python3 smoke_test.py)",
       "Bash(printf '%s\\\\n' '#if defined\\(MACOS\\) || defined\\(TARGET_OS_MAC\\)' '#define OS_CODE 0x07')",
       "Bash(sed -i '' s/__TRACKED_VAR__/__TRACKED_VAR__/ t_zutil.h)",
-      "Bash(rm -f t_zutil.h)"
+      "Bash(rm -f t_zutil.h)",
+      "Bash(ls -la && echo \"---PARENT---\" && ls -la ..)",
+      "Bash(python3 -m py_compile config.py sim.py graph.py eval.py)",
+      "Bash(python3 -m py_compile eval.py)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }

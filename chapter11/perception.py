@@ -1,10 +1,13 @@
 from pydantic import BaseModel, Field
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_anthropic import ChatAnthropic
-from config import MODEL
+from config import MODEL, OBJECTS
 
 # temperature를 0으로 설정하면 일관된 결과를 유도할 수 있다
 vlm = ChatAnthropic(model=MODEL, temperature=0)
+
+# 방에 존재할 수 있는 물체 카탈로그(액션 API가 인식하는 정확한 이름)
+KNOWN_OBJECTS = ", ".join(OBJECTS.keys())
  
 class SeenObject(BaseModel):
     name: str = Field(description="집기/놓기 액션에 사용할 간단한 영어 명사(예: teddy bear, red cube)")
@@ -15,10 +18,14 @@ class Observation(BaseModel):
     objects: list[SeenObject] = Field(description="지금 카메라에 실제로 보이는 물체들의 목록")
 
 # 명확한 제약 조건을 담은 가이드라인 제공
-PERCEIVE_SYS = """당신은 가정용 로봇의 시각 인지 모듈입니다.
+PERCEIVE_SYS = f"""당신은 가정용 로봇의 시각 인지 모듈입니다.
 주어진 카메라 이미지에서 '실제로 보이는' 물체만 나열합니다.
 보이지 않는 물체를 추측해 지어내지 않습니다(없으면 빈 목록을 반환하세요).
-이름은 로봇이 후속 액션 API에서 인식할 수 있도록 간단한 영어 명사로 작성합니다."""
+
+이 방에 있을 수 있는 물체는 다음뿐입니다: {KNOWN_OBJECTS}.
+인식한 물체는 반드시 이 목록의 이름과 '철자까지 똑같이'(영문 소문자) 출력하세요.
+예: 빨간 곰인형 → 'teddy bear', 노란 오리 → 'rubber duck', 초록 블록 → 'green block'.
+목록에 없는 것(로봇 자신의 팔·그리퍼, 책상·바구니 같은 가구)은 출력하지 않습니다."""
  
 def perceive(img_b64: str) -> Observation:
     """base64 JPEG 이미지를 받아 정형화된 시각 인지 결과(Observation)를 반환한다."""

@@ -8,6 +8,8 @@
       <geometry><box size="3 0.1 1"/></geometry></collision>
   </link>
   <joint name="j_north" type="fixed">
-    <parent link="base"/><child link="wall_north"/></joint>
+    <parent link="base"/>
+      <child link="wall_north"/>
+    </joint>
   <!-- wall_south / wall_east / wall_west 동일 패턴 -->
 </robot>

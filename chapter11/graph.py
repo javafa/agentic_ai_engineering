@@ -2,13 +2,14 @@ from typing import Annotated, Optional
 from typing_extensions import TypedDict
 from operator import add
 from langgraph.graph import StateGraph, START, END
-from config import MAX_STEPS, MAX_RECOVERY
+from config import MAX_STEPS, MAX_RECOVERY, GUI
 from sim import RobotAPI
 from perception import perceive, Observation
 from planner import plan_next
 
 # 하나의 시뮬레이터 인스턴스를 메모리에 계속 유지한다
-ROBOT = RobotAPI(gui=False)
+# ROBOT_GUI=1 환경변수를 주면 실시간 3D 뷰어 창이 열린다 (config.GUI)
+ROBOT = RobotAPI(gui=GUI)
  
 class RoomAgentState(TypedDict):
     instruction: str                      # 사용자 자연어 명령
@@ -40,7 +41,7 @@ def act_node(state):
     elif a == "place":       r = ROBOT.place(t)
     elif a == "look_around": r = ROBOT.look_around()
     else:                    r = {"ok": True, "reason": "완료 선언"}
-    holding = ROBOT.held[2] if ROBOT.held else None
+    holding = ROBOT.held[1] if ROBOT.held else None
     line = f"{a}({t}) -> {'OK' if r['ok'] else 'FAIL'}: {r['reason']}"
     return {"last_result": line, "last_ok": r["ok"], "holding": holding,
             "action_log": [line], "step_count": state["step_count"] + 1}
@@ -108,3 +109,4 @@ if __name__ == "__main__":
           "| 복구:", out["recovery_count"])
     for line in out["action_log"]:
         print(" -", line)
+    ROBOT.hold_view()       # GUI일 때 결과를 볼 수 있도록 창을 열어둔다

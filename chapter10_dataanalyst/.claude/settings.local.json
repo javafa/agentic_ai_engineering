@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import safety\")",
+      "Bash(python -c \"import memory\")",
+      "Bash(python3 -c \"import safety\")",
+      "Bash(python3 -c \"import memory\")",
+      "Bash(python3 -c \"import safety, memory; print\\('OK: find_risky =', callable\\(safety.find_risky\\), '| ExperienceMemory =', bool\\(memory.ExperienceMemory\\)\\)\")",
+      "Bash(python3 -m py_compile config.py state.py nodes.py safety.py memory.py executor.py graph.py eval.py weather.py)",
+      "Bash(python3 -)",
+      "Bash(python3 -c \"from dotenv import load_dotenv; import os; load_dotenv\\(\\); k=os.getenv\\('ANTHROPIC_API_KEY'\\); print\\('present:', bool\\(k\\), '| length:', len\\(k\\) if k else 0\\)\")",
+      "Read(//Users/donho/.pyenv/**)",
+      "Read(//Users/donho/.local/pipx/**)",
+      "Bash(python3 -m site --user-site)",
+      "Read(//Users/donho/books_code/**)",
+      "Read(//Users/donho/**)",
+      "Bash(/opt/anaconda3/envs/chapter10/bin/python --version)",
+      "Bash(/opt/anaconda3/envs/chapter10/bin/python -)",
+      "Bash(/opt/anaconda3/envs/chapter10/bin/python graph_failure.py)"
+    ]
+  }
+}

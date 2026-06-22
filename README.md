@@ -107,6 +107,13 @@ Columns: Chapter · Topic (EN — 한국어) · Code folder.
 Most chapters run with the root `requirements.txt`. These need extra installs:
 대부분의 장은 루트 `requirements.txt`로 충분하지만, 다음 장은 추가 설치가 필요합니다.
 
+- **Ch.10 — The Persistent Junior Analyst / 데이터 분석가**
+  DuckDB and a persistent execution kernel, etc.
+  DuckDB·실행 커널 등.
+  ```bash
+  pip install -r chapter10/requirements.txt
+  ```
+
 - **Ch.11 — The Butler Robot / 집사 로봇**
   Needs the PyBullet physics simulator (macOS Apple Silicon build notes included).
   PyBullet 물리 시뮬레이터가 필요합니다(macOS Apple Silicon 빌드 안내 포함).
@@ -115,13 +122,6 @@ Most chapters run with the root `requirements.txt`. These need extra installs:
   ```
   See [`chapter11/README.md`](chapter11/README.md) for install/viewer details — run the live 3D viewer with `ROBOT_GUI=1 python graph.py`.
   설치/뷰어 안내는 [`chapter11/README.md`](chapter11/README.md) 참고 — `ROBOT_GUI=1 python graph.py`로 실시간 3D 뷰어 실행.
-
-- **Ch.10 — The Persistent Junior Analyst / 데이터 분석가**
-  DuckDB and a persistent execution kernel, etc.
-  DuckDB·실행 커널 등.
-  ```bash
-  pip install -r chapter10/requirements.txt
-  ```
 
 - **Ch.13 — Open-Source LLM Serving / 오픈소스 LLM 서빙**
   Requires vLLM and an **NVIDIA GPU** (e.g. RTX 3090). After the server starts, switch the agent's `base_url` to the local model.
@@ -135,8 +135,8 @@ Most chapters run with the root `requirements.txt`. These need extra installs:
 
 ## Requirements / 요구사항
 
-- Python 3.11 recommended / Python 3.11 권장
+- Python 3.12 recommended / Python 3.12 권장
 - API keys: `ANTHROPIC_API_KEY` (required); plus `VOYAGE_API_KEY` / `WEATHER_API_KEY` depending on the chapter.
   API 키: `ANTHROPIC_API_KEY`(필수), 사용 장에 따라 `VOYAGE_API_KEY` / `WEATHER_API_KEY`.
 - Some features need external services/hardware (Ch.9 Kakao/Slack notifications, Ch.13 GPU serving).
-  일부 기능은 외부 서비스/하드웨어가 필요합니다(9장 카카오·슬랙 알림, 13장 GPU 서빙).
+  일부 기능은 외부 서비스가 필요합니다(9장 카카오·슬랙 알림, 13장 GPU 서빙).

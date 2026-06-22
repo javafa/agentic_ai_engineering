@@ -4,6 +4,9 @@ openai
 python-dotenv
 requests
 
+# MCP
+mcp
+
 # ── LangChain 코어 ──
 langchain            # create_agent 가 여기 있음 (원래 목록에 빠져 있었음)
 langchain-core

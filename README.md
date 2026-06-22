@@ -84,24 +84,6 @@ Columns: Chapter · Topic (EN — 한국어) · Code folder.
 
 ---
 
-## Code Directories / 코드 디렉터리
-
-| Folder | Key files / 핵심 파일 |
-|------|-----------|
-| [`chapter2/`](chapter2)  | `weather.py`, `multi_tool_agent.py` |
-| [`chapter3/`](chapter3)  | `react_agent.py`, `react_json_agent.py`, `langgraph_react.py`, `state_graph.py` |
-| [`chapter4/`](chapter4)  | `basic_memory.py`, `sliding_window.py`, `summary_memory.py`, `entity_memory.py`, `hybrid_memory.py`, `long_term_agent.py`, `chroma_basic.py`, `checkpointer_sqlite.py` |
-| [`chapter5/`](chapter5)  | `agent_harness.py`, `structured_output.py`, `pydantic_output.py`, `injection_guard.py`, `pii_filter.py`, `cost_guard.py`, `auto_recovery.py` |
-| [`chapter6/`](chapter6)  | `naive_rag.py`, `query_rewrite.py`, `reranking.py`, `agentic_rag.py`, `graph_rag.py`, `hybrid_rag.py` |
-| [`chapter7/`](chapter7)  | `tool_graph.py`, `custom_routing.py`, `human_approval.py`, `streaming_basic.py`, `streaming_tool.py`, `extended_state.py` |
-| [`chapter8/`](chapter8)  | `supervisor.py`, `handoff.py`, `hierarchical.py` |
-| [`chapter9/`](chapter9)  | `main.py`, `market.py`, `news.py`, `formatter.py`, `notify.py`, `scheduler.py`, `eval_metrics.py` |
-| [`chapter10/`](chapter10) | `graph.py`, `executor.py`, `nodes.py`, `state.py`, `safety.py`, `memory.py`, `eval.py`, `train/` |
-| [`chapter11/`](chapter11) | `sim.py`, `perception.py`, `planner.py`, `graph.py`, `eval.py`, `room.urdf`, `smoke_test.py` |
-| [`chapter13/`](chapter13) | `run_vllm.sh`, `run_vllm_llama.sh`, `chat_anthropic.py`, `request_test_anthropic.py` |
-
----
-
 ## Per-chapter Setup / 장별 추가 설치
 
 Most chapters run with the root `requirements.txt`. These need extra installs:

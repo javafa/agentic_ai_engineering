@@ -3,3 +3,5 @@ anthropic
 huggingface_hub
 langchain_anthropic
 langgraph
+prometheus-fastapi-instrumentator==7.1.0 # 13.5.4 측정
+fastapi[standard]<0.137 # 0.137+의 _IncludedRouter 변경이 위 instrumentator와 충돌(vLLM 서버 500) → 0.136.x로 고정

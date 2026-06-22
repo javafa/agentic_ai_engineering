@@ -1,0 +1,5 @@
+vllm
+anthropic
+huggingface_hub
+langchain_anthropic
+langgraph

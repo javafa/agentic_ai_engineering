@@ -28,7 +28,17 @@ pybullet 은 Apple Silicon 용으로 **미리 빌드된 휠을 제공하지 않�
 `#define fdopen NULL` 을 적용하고, 이 매크로가 시스템 헤더 `<stdio.h>` 의 `fdopen` 선언이 깨집니다. 
 Apple clang 16+ 의 엄격해진 헤더 처리 때문에 발생하는 문제입니다.
 
-### 해결 1 — 소스 패치 후 설치 (현재 Python 그대로 사용)
+### 해결 1 — conda 사용 (권장: 컴파일 없음)
+
+conda 환경을 쓴다면 미리 빌드된 바이너리를 바로 받을 수 있습니다.
+
+```bash
+conda install -c conda-forge pybullet
+```
+
+단, 이후 챕터 코드도 **같은 conda 환경의 Python** 으로 실행해야 합니다.
+
+### 해결 2 — 소스 패치 후 설치 (현재 Python 그대로 사용)
 
 Xcode 커맨드라인 도구가 필요합니다.
 
@@ -47,6 +57,7 @@ sed -i '' "s/$old/$new/" examples/ThirdPartyLibs/zlib/zutil.h
 
 pip install .               # 컴파일에 수 분 소요
 ```
+---
 
 zlib 한 줄 패치만으로 끝까지 컴파일되며, 만들어지는 휠은 `universal2`(Intel·Apple Silicon 공용)입니다.
 이후 chapter11 디렉터리로 돌아와 나머지 패키지를 설치합니다(이미 깔린 pybullet 은 건너뜀).
@@ -54,18 +65,6 @@ zlib 한 줄 패치만으로 끝까지 컴파일되며, 만들어지는 휠은 `
 ```bash
 pip install -r requirements.txt
 ```
-
-### 해결 2 — conda 사용 (컴파일 없음)
-
-conda 환경을 쓴다면 미리 빌드된 바이너리를 바로 받을 수 있습니다.
-
-```bash
-conda install -c conda-forge pybullet
-```
-
-단, 이후 챕터 코드도 **같은 conda 환경의 Python** 으로 실행해야 합니다.
-
----
 
 ## 설치 확인
 

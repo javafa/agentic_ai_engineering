@@ -25,8 +25,8 @@ ERROR: Failed building wheel for pybullet
 pybullet 은 Apple Silicon 용으로 **미리 빌드된 휠을 제공하지 않아** 소스에서 직접 컴파일됩니다.
 그런데 함께 들어있는 **오래된 zlib**(`examples/ThirdPartyLibs/zlib/zutil.h`)가
 `TARGET_OS_MAC`(요즘 맥에선 항상 `1`)을 **클래식 맥OS(System 7~9)** 신호로 오인해
-`#define fdopen NULL` 을 적용하고, 이 매크로가 시스템 헤더 `<stdio.h>` 의 `fdopen` 선언을
-깨뜨립니다. Apple clang 16+ 의 엄격해진 헤더 처리 때문에 표면화된 문제입니다.
+`#define fdopen NULL` 을 적용하고, 이 매크로가 시스템 헤더 `<stdio.h>` 의 `fdopen` 선언이 깨집니다. 
+Apple clang 16+ 의 엄격해진 헤더 처리 때문에 발생하는 문제입니다.
 
 ### 해결 1 — 소스 패치 후 설치 (현재 Python 그대로 사용)
 
@@ -93,5 +93,5 @@ ROBOT_GUI=1 python3 eval.py      # 평가 3건을 연속으로 관찰
 ```
 
 - 작업이 끝나면 창이 유지됩니다. 마우스로 시점을 돌려볼 수 있고, 종료하려면 터미널에서 `Ctrl-C` 를 누르세요.
-- 동작 속도는 `config.py` 의 `GUI_STEP_SLEEP`(스텝당 대기 시간)으로 조절합니다. 값을 키우면 더 느리게(자세히) 움직입니다.
+- 동작 속도는 `config.py` 의 `GUI_STEP_SLEEP`(스텝당 대기 시간)으로 조절합니다. 값을 키우면 더 느리게 움직입니다.
 - GUI 가 없는 환경(예: SSH)에서는 자동으로 헤드리스로 전환됩니다.

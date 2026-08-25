@@ -12,9 +12,9 @@ load_dotenv()
 # kiwi 를 활용해 한국어를 토큰화한다.
 # 차이 
 # 1. query.lower().split() 사용시 - 띄어쓰기 단위. 영어에 최적화
-# [ "voyage", "ai의", "voyage-3", "모델의", "벡터", "차원은?" ]
+# [ "voyage", "ai의", "voyage-4", "모델의", "벡터", "차원은?" ]
 # 2. kiwi tokenizer 사용 시 - 조사까지 분해 해준다
-# [ "Voyage", "AI", "의", "voyage-3", "모델", "의", "벡터", "차원", "은", "?" ]
+# [ "Voyage", "AI", "의", "voyage-4", "모델", "의", "벡터", "차원", "은", "?" ]
 # 한국어 토크나이저
 from kiwipiepy import Kiwi
 kiwi = Kiwi()
@@ -43,7 +43,7 @@ raw_documents = [
     ChromaDB, Pinecone, Weaviate 등이 대표적인 벡터 DB입니다.
     
     임베딩 모델은 텍스트를 고차원 벡터로 변환합니다.
-    Voyage AI의 voyage-3은 1024차원 벡터를 생성하며,
+    Voyage AI의 voyage-4는 1024차원 벡터를 생성하며,
     비용 효율적이면서도 대부분의 RAG 사용 사례에 충분한 성능을 제공합니다.""",
      metadata={"source": "vector_db.txt", "chapter": 5}),
 ]
@@ -64,7 +64,7 @@ bm25_retriever = BM25Retriever.from_documents(chunks, preprocess_func=tokenize)
 bm25_retriever.k = 3
 
 # 임베딩 모델 설정 (기존에 사용한 모델과 동일해야 함)
-embeddings = VoyageAIEmbeddings(model="voyage-3")
+embeddings = VoyageAIEmbeddings(model="voyage-4")
 
 # 로컬에 저장된 Chroma DB 로드
 vector_store = Chroma(
@@ -83,7 +83,7 @@ ensemble_retriever = EnsembleRetriever(
 )
 
 # 사용자의 질문 정의
-query = "Voyage AI의 voyage-3 모델의 벡터 차원은?"
+query = "Voyage AI의 voyage-4 모델의 벡터 차원은?"
 
 # 통합 검색기를 호출하여 최종 문서 리스트 추출
 docs = ensemble_retriever.invoke(query)

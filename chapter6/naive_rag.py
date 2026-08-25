@@ -28,7 +28,7 @@ raw_documents = [
     ChromaDB, Pinecone, Weaviate 등이 대표적인 벡터 DB입니다.
     
     임베딩 모델은 텍스트를 고차원 벡터로 변환합니다.
-    Voyage AI의 voyage-3은 1024차원 벡터를 생성하며,
+    Voyage AI의 voyage-4는 1024차원 벡터를 생성하며,
     비용 효율적이면서도 대부분의 RAG 사용 사례에 충분한 성능을 제공합니다.""",
      metadata={"source": "vector_db.txt", "chapter": 5}),
 ]
@@ -46,7 +46,7 @@ for i, chunk in enumerate(chunks):
     print(f"  청크 {i}: {len(chunk.page_content)}자 (출처: {chunk.metadata['source']})")
 
 # 임베딩 모델 지정
-embeddings = VoyageAIEmbeddings(model="voyage-3")
+embeddings = VoyageAIEmbeddings(model="voyage-4")
  
 # ChromaDB에 생성
 vector_store = Chroma(

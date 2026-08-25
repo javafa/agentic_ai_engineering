@@ -1,5 +1,5 @@
 import time, urllib.parse
-from config import NEW_RSS
+from config import NEWS_RSS
 from datetime import datetime, timezone
 import feedparser
 # from common import with_retry
@@ -15,7 +15,7 @@ def _is_recent(entry, hours: int = 24) -> bool:
   
 # @with_retry(tries=2, delay=2.0) # 필요시 적용
 def fetch_news(keyword: str, max_items: int = 3) -> list:
-    url = NEW_RSS.format(q=urllib.parse.quote(keyword))
+    url = NEWS_RSS.format(q=urllib.parse.quote(keyword))
     feed = feedparser.parse(url)
     # bozo=1 이면서 항목도 없으면 파싱 실패로 간주
     if getattr(feed, "bozo", 0) and not feed.entries:

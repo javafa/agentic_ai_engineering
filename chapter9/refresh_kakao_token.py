@@ -53,7 +53,8 @@ def refresh_kakao_token():
     data = {
         "grant_type": "refresh_token",
         "client_id": REST_API_KEY,
-        "refresh_token": refresh_token
+        "refresh_token": refresh_token,
+        "client_secret":  CLIENT_SECRET
     }
     
     response = requests.post(url, data=data)

@@ -35,8 +35,8 @@ raw_documents = [
  
 # 청킹
 text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=500,      # 청크당 최대 500자
-    chunk_overlap=50,    # 청크 간 50자 겹침 (문맥 유지)
+    chunk_size=1024,      # 청크당 최대 1024자
+    chunk_overlap=128,    # 청크 간 128자 겹침 (문맥 유지)
     separators=["\n\n", "\n", " ", ""]  # 단락 > 줄 > 단어 순으로 분할
 )
  

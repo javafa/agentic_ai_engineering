@@ -25,13 +25,13 @@ parser = PydanticOutputParser(pydantic_object=TaskPlan)
 print(parser.get_format_instructions())
  
 # LLM에게 요청
-structured_llm = ChatAnthropic(model="claude-sonnet-4-5")
+llm = ChatAnthropic(model="claude-sonnet-4-5")
 
 prompt = f"""다음 작업의 실행 계획을 세워주세요.
 작업: 블로그 포스트 작성하기
 {parser.get_format_instructions()}"""
  
-response = structured_llm.invoke(prompt)
+response = llm.invoke(prompt)
  
 # 응답을 Pydantic 모델로 파싱 + 검증
 try:

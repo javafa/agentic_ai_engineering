@@ -6,6 +6,7 @@ RISKY_ATTR = {                       # (모듈, 함수) 형태의 위험 호출
     ("subprocess", "run"), ("subprocess", "Popen"), ("subprocess", "call"),
 }
 RISKY_METHODS = {"to_csv", "to_excel", "to_pickle", "to_parquet", "to_sql", "execute"}
+# 외부 API를 사용하려면 requests를 허용 목록으로 빼거나 승인게이트를 거치도록 설계
 RISKY_MODULES = {"subprocess", "socket", "shutil", "requests", "urllib"}
 RISKY_BUILTINS = {"eval", "exec", "compile", "__import__"}
 WRITE_MODES = {"w", "a", "x", "wb", "ab", "w+", "r+"}

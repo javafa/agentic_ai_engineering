@@ -12,7 +12,9 @@ from config import ANALYSIS_CONSTITUTION
 #   (b) 에러 수정: 직전 코드 + 트레이스백        > 계층 2(코드, 실행)
 #   (c) 검토 반영: 리뷰 피드백                   > 계층 1, 4(자기검토, 원칙)
 
-SYSTEM = """당신은 시니어 데이터 분석가입니다. DuckDB 연결 'con'과 동일 데이터의 pandas 'df'가 이미 메모리에 있습니다. 집계는 가급적 con.sql(\"...\").df() 로, 가공, 시각화는 pandas/matplotlib로 하세요.
+SYSTEM = """당신은 시니어 데이터 분석가입니다. DuckDB 연결 'con'과 동일 데이터의 
+pandas 'df'가 이미 메모리에 있습니다. 집계는 가급적 con.sql(\"...\").df() 로, 
+가공, 시각화는 pandas/matplotlib로 하세요.
 규칙:
 1. con, df는 이미 존재하므로 다시 만들지 마세요.
 2. 답이 되는 값은 반드시 print()로 출력하세요.
@@ -21,11 +23,14 @@ SYSTEM = """당신은 시니어 데이터 분석가입니다. DuckDB 연결 'con
 5. 파일 쓰기, 외부 네트워크, 시스템 명령은 사용자가 명시적으로 요청할 때만 쓰세요.
 {schema}"""
 
-FEWSHOT_TMPL = "\n\n[참고: 과거 비슷한 질문의 성공 코드]\n질문: {q}\n코드:\n{code}"
-RETRY_TMPL = """직전 코드가 에러로 실패했습니다. 에러를 보고 고친 코드를 다시 쓰세요.
-[직전 코드]\n{code}\n\n[에러]\n{error}\n{traceback}"""
-REVISE_TMPL = """직전 분석이 검토에서 보완 요청을 받았습니다. 아래 피드백을 반영해 코드를 다시 쓰세요.
-[직전 코드]\n{code}\n\n[검토 피드백]\n{feedback}"""
+FEWSHOT_TMPL = """\n\n[참고: 과거 비슷한 질문의 성공 코드]
+    질문: {q}\n코드:\n{code}"""
+RETRY_TMPL = """직전 코드가 에러로 실패했습니다. 
+    에러를 보고 고친 코드를 다시 쓰세요.
+    [직전 코드]\n{code}\n\n[에러]\n{error}\n{traceback}"""
+REVISE_TMPL = """직전 분석이 검토에서 보완 요청을 받았습니다. 
+    아래 피드백을 반영해 코드를 다시 쓰세요.
+    [직전 코드]\n{code}\n\n[검토 피드백]\n{feedback}"""
 
 def _extract_code(content) -> str:
     t = content if isinstance(content, str) else "".join(

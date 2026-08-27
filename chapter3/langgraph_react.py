@@ -28,7 +28,7 @@ def calculate(expr: str) -> str:
     return eval(expr, {"__builtins__": None}, {})
 
 
-model = ChatAnthropic(model="claude-sonnet-4-5", temperature=0)
+model = ChatAnthropic(model="claude-sonnet-5")
 tools = [get_weather, calculate]
 agent = create_agent(model, tools=tools)
 

@@ -31,7 +31,7 @@ def get_weather(city: str) -> str:
 
 # Tool 연결
 tools = [calculate, get_weather]
-llm = ChatAnthropic(model="claude-sonnet-4-6").bind_tools(tools)
+llm = ChatAnthropic(model="claude-sonnet-5").bind_tools(tools)
 
 # agent 노드 함수 정의
 def agent_node(state: State) -> dict:

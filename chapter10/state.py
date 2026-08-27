@@ -7,7 +7,7 @@ from config import MODEL, BOOTSTRAP_CODE
 from executor import KernelExecutor
 from memory import ExperienceMemory
  
-llm = ChatAnthropic(model=MODEL, temperature=0)
+llm = ChatAnthropic(model=MODEL)
 KERNEL = KernelExecutor(bootstrap=BOOTSTRAP_CODE)   # 커널 하나를 계속 살려 둔다
 MEMORY = ExperienceMemory()
 

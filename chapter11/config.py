@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
  
-MODEL = "claude-sonnet-4-6"
+MODEL = "claude-sonnet-5"
 MAX_STEPS = 12          # 행동 스텝 제한 (무한 루프 방지)
 MAX_RECOVERY = 3        # 실패 복구 제한
 CAM_W, CAM_H = 512, 384 # VLM에 전송용 해상도

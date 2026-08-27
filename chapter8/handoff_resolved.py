@@ -37,7 +37,7 @@ class State(TypedDict):
     resolved: Annotated[list, add]   # ["tech_support", "billing"] 누적
 
 # 3) LLM
-llm = ChatAnthropic(model="claude-sonnet-4-6")
+llm = ChatAnthropic(model="claude-sonnet-5")
 router_llm = llm.with_structured_output(Route)
 
 # 4) 공통 실행 헬퍼 — 모든 에이전트가 이걸 통해 동작

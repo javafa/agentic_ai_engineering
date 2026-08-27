@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MODEL = "claude-sonnet-4-6"
+MODEL = "claude-sonnet-5"
 MAX_RETRIES = 3           # 코드 실행 에러에 대한 자기수정 한도 (계층 2)
 MAX_REVIEW = 2            # 자기검토(원칙 위반, 품질) 재작성 한도 (계층 1, 4)
 EXEC_TIMEOUT = 30         # 코드 1회 실행 제한 시간(초)

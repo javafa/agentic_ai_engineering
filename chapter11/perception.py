@@ -3,8 +3,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_anthropic import ChatAnthropic
 from config import MODEL, OBJECTS
 
-# temperature를 0으로 설정하면 일관된 결과를 유도할 수 있다
-vlm = ChatAnthropic(model=MODEL, temperature=0)
+vlm = ChatAnthropic(model=MODEL)
 
 # 방에 존재할 수 있는 물체 카탈로그(액션 API가 인식하는 정확한 이름)
 KNOWN_OBJECTS = ", ".join(OBJECTS.keys())

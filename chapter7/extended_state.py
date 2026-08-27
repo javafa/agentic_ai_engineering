@@ -12,7 +12,7 @@ class ExtendedState(TypedDict):
     classification: str   # 분류
     step: int             # 단계
 
-llm = ChatAnthropic(model="claude-sonnet-4-6")
+llm = ChatAnthropic(model="claude-sonnet-5")
 
 # 분류 함수
 def classify(state: ExtendedState):

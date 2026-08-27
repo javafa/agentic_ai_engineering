@@ -36,7 +36,7 @@ class State(TypedDict):
     trace: Annotated[list, add] # 에이전트 이름, 답변을 누적
 
 # 3) LLM
-llm = ChatAnthropic(model="claude-sonnet-4-6")
+llm = ChatAnthropic(model="claude-sonnet-5")
 router_llm = llm.with_structured_output(Route)
 
 # 4) 공통 실행 헬퍼 — 모든 에이전트가 이걸 통해 동작

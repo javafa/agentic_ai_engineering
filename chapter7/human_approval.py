@@ -19,7 +19,7 @@ def send_email(to: str, subject: str, body: str) -> str:
     return f"{to}에게 '{subject}' 이메일 발송 완료"
 
 tools = [send_email]
-llm = ChatAnthropic(model="claude-sonnet-4-6").bind_tools(tools, tool_choice="any") # tool_choice 옵션이 any 이면 꼭 하나를 선택한다. 
+llm = ChatAnthropic(model="claude-sonnet-5").bind_tools(tools, tool_choice="any") # tool_choice 옵션이 any 이면 꼭 하나를 선택한다. 
 
 def agent_node(state: State) -> dict:
     return {"messages": [llm.invoke(state["messages"])]}

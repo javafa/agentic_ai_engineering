@@ -40,7 +40,7 @@ def project_growth(current: float, growth_rate: float, years: int) -> str:
     return f"현재 {current:g} → {years}년 후 약 {future:,.1f} (연 {rate:.0%} 성장 가정)"
 
 # 3) 모델 및 상수 초기화
-llm = ChatAnthropic(model="claude-sonnet-4-6", temperature=0)
+llm = ChatAnthropic(model="claude-sonnet-5")
 MAX_ROUNDS = 8        # 슈퍼바이저 ↔ 워커 왕복 횟수 제한
 MAX_TOOL_LOOPS = 5    # 워커 1회 실행 내부의 도구 루프 제한
 

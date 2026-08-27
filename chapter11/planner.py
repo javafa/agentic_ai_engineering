@@ -3,7 +3,7 @@ from typing import Literal
 from langchain_anthropic import ChatAnthropic
 from config import MODEL
  
-planner_llm = ChatAnthropic(model=MODEL, temperature=0)
+planner_llm = ChatAnthropic(model=MODEL)
 
 # 로봇이 수행할 수 있는 행동의 종류를 명확히 제한
 class PlanStep(BaseModel):

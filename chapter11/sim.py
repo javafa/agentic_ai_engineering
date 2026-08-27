@@ -95,7 +95,7 @@ class RobotAPI:
         self._set_fingers(FINGER_OPEN)
 
     def _mount_arm(self):
-        """팔과 토르소를 현재 이동 베이스 위(앞쪽 ARM_FWD)로 옮겨 함께 움직이게 한다."""
+        """팔과 토르소를 현재 이동 베이스 위로 옮겨 함께 움직이게 한다."""
         bp, _ = p.getBasePositionAndOrientation(self.base)
         ax = bp[0] + ARM_FWD * math.cos(self.yaw)
         ay = bp[1] + ARM_FWD * math.sin(self.yaw)

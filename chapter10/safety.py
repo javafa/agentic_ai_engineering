@@ -22,6 +22,7 @@ def find_risky(code: str) -> list:
     for node in ast.walk(tree):
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) \
                 and node.func.id == "open":
+            # open(path, mode="w")처럼 키워드 인자로 준 모드는 잡지 못함
             mode = node.args[1].value if len(node.args) >= 2 \
                 and isinstance(node.args[1], ast.Constant) else "r"
             if str(mode) in WRITE_MODES:

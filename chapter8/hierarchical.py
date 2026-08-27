@@ -75,7 +75,8 @@ def web_search(query: str) -> str:
 @tool
 def write_code(description: str, language: str = "python") -> str:
     """요구사항에 따라 코드를 작성합니다."""
-    return f"{language}\n# {description}에 대한 코드\nprint('Hello from generated code')\n"
+    return f"""{language}
+               {description}에 대한 코드\nprint('Hello from generated code')\n"""
 
 # 4) 모델과 상수 - 빠른 응답 확인을 위해 더 작은 모델로 변경
 llm = ChatAnthropic(model="claude-haiku-4-5")

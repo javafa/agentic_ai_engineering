@@ -5,7 +5,7 @@ from config import LOCATIONS
 # 데이터셋: (테스트 명령, 대상 객체, 목적지)
 GOLD = [
     {"q": "곰인형을 바구니에 넣어줘",       "obj": "teddy bear",  "to": "basket"},
-    {"q": "빨간 블록을 선반에 올려줘",       "obj": "red cube",    "to": "shelf"},
+    {"q": "빨간 큐브를 선반에 올려줘",       "obj": "red cube",    "to": "shelf"},
     {"q": "오리를 테이블에서 치워줘",        "obj": "rubber duck", "to": "basket"},
 ]
  

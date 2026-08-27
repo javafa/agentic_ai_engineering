@@ -9,11 +9,11 @@ class EntityMemory:
     """대화에서 엔티티(사람, 장소, 일정 등)를 추출해 구조화 저장한다."""
 
     EXTRACT_PROMPT = """다음 대화에서 정보를 추출하고 JSON 형식으로만 반환합니다.
-
-    형식: {"entities": [{"name": "...", "type": "person|place|event|preference", "facts": ["..."]}]}
-
-    새로운 정보만 추출하는데 인사말이나 감정 표현은 제외합니다.
-    설명 없이 JSON 객체만 출력합니다."""
+        형식: {"entities": [
+                {"name": "...", "facts": ["..."],
+                "type": "person|place|event|preference"}]}
+        새로운 정보만 추출하는데 인사말이나 감정 표현은 제외합니다.
+        설명 없이 JSON 객체만 출력합니다."""
 
     def __init__(self):
         self.entities: dict[str, dict] = {}  # name -> {type, facts}

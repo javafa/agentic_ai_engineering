@@ -11,7 +11,8 @@ class State(TypedDict):
     messages: Annotated[list, add_messages]
 
 # LLM
-llm = ChatAnthropic(model="claude-sonnet-4-6", streaming=True)
+llm = ChatAnthropic(model="claude-sonnet-5", streaming=True,
+                    thinking={"type": "disabled"})
 
 # 노드
 def chatbot(state: State):

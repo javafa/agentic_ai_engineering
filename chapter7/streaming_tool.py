@@ -19,7 +19,8 @@ def add(a: int, b: int) -> int:
 
 tools = [add]
 
-llm = ChatAnthropic(model="claude-sonnet-4-6", streaming=True).bind_tools(tools)
+llm = ChatAnthropic(model="claude-sonnet-5", streaming=True,
+                    thinking={"type": "disabled"}).bind_tools(tools)
 
 def agent(state: State):
     return {"messages": [llm.invoke(state["messages"])]}

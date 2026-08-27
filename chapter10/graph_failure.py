@@ -3,7 +3,7 @@ import graph
 
 def inject_kernel_failure(fail_on=(1,), error="ValueError: injected test error"):
     """nodes.KERNEL.run을 감싸, 지정한 '호출 순번'에서만 가짜 에러를 반환한다.
-    주의: import graph(=부트스트랩) 이후에 호출해야 데이터 로딩을 깨뜨리지 않는다."""
+       주의: import graph 이후에 호출해야 데이터 로딩을 깨뜨리지 않는다."""
     orig = nodes.KERNEL.run            # 원본 bound method 보관
     n = {"i": 0}
     def patched(code, timeout=30):

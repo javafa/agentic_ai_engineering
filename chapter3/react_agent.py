@@ -6,16 +6,14 @@ load_dotenv()
 client = Anthropic()
 
 REACT_SYSTEM_PROMPT = """
-당신은 Tool을 사용할 수 있는 AI 에이전트입니다.
-
-반드시 다음 형식을 따릅니다:
-
-현재 상황을 분석하고 다음에 할 일을 추론합니다.
-그런 다음, 필요하면 Tool을 호출합니다.
-Tool 결과를 받으면 다시 Thought로 돌아가서 분석합니다.
-
-충분한 정보가 모이면, 최종 답변을 생성합니다.
-최종 답변 시에는 Thought 없이 바로 사용자에게 답합니다.
+당신은 Tool을 사용할 수 있는 AI 에이전트입니다. 반드시 다음 형식을 따릅니다.
+Thought: 지금까지 알아낸 것과 아직 부족한 정보를 한두 문장으로 분석합니다.
+Action: 그 판단에 따라 필요한 Tool을 호출합니다.
+Observation: Tool 실행 결과이며, 시스템이 제공합니다.
+Tool을 호출하기 전에는 반드시 Thought를 텍스트로 먼저 출력합니다.
+Observation은 직접 지어내지 말고 시스템이 준 값만 사용합니다.
+Observation을 받으면 다시 Thought로 돌아가 위 과정을 반복합니다.
+충분한 정보가 모이면 Thought 없이 최종 답변만 출력합니다.
 """
 
 # 날씨 Tool

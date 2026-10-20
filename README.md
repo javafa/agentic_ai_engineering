@@ -40,41 +40,35 @@ python chapter11/graph.py
 
 ## 목차
 
-열: 장 · 주제(영문 — 한국어) · 코드 폴더.
+### 1부 · 에이전트의 핵심 원리
+| 장 | 제목 | 주요 내용 | 코드 |
+|:--:|------|------|------|
+| 1 | AI 에이전트의 시대 | 챗봇·RAG·에이전트 비교, ReAct, LLM·메모리·툴, 하네스 엔지니어링, 개발환경 구성 | — |
+| 2 | 툴 사용 | 툴 호출 흐름, 날씨 API 에이전트, 멀티 툴, 스키마 설계, MCP vs CLI | [`chapter2/`](chapter2) |
+| 3 | ReAct 패턴 구현 | 툴 사용·JSON 기반 ReAct, LangGraph ReAct, 무한 루프 방지 | [`chapter3/`](chapter3) |
+| 4 | 메모리 시스템 구축 | 단기·요약 메모리, 벡터 DB 장기 메모리, 메모리 압축, 체크포인터 | [`chapter4/`](chapter4) |
+| 5 | 컨텍스트와 하네스 엔지니어링 | 컨텍스트 관리, 입력 검증, 구조화된 출력, 가드레일 | [`chapter5/`](chapter5) |
 
-### 1부 · 기초 다지기
-| 장 | 주제 | 코드 |
-|:--:|------|------|
-| 1 | Age of AI Agents — 챗봇/RAG/에이전트 비교, ReAct, 하네스 개관 | — |
+### 2부 · 에이전트 확장하기
+| 장 | 제목 | 주요 내용 | 코드 |
+|:--:|------|------|------|
+| 6 | RAG + 에이전트 결합 | RAG 파이프라인, Agentic RAG, GraphRAG, 하이브리드 RAG | [`chapter6/`](chapter6) |
+| 7 | LangGraph 기반 에이전트 워크플로우 | StateGraph, 조건부 라우팅, Human-in-the-Loop, 스트리밍 | [`chapter7/`](chapter7) |
+| 8 | 멀티 에이전트 오케스트레이션 | 슈퍼바이저·핸드오프·계층형 패턴, 안전한 상태 관리 | [`chapter8/`](chapter8) |
 
-### 2부 · 핵심 개념 튜토리얼
-| 장 | 주제 | 코드 |
-|:--:|------|------|
-| 2 | Tool Use — 도구 호출 원리·멀티 툴·스키마 설계 | [`chapter2/`](chapter2) |
-| 3 | ReAct Pattern — Reasoning+Acting 루프, LangGraph ReAct | [`chapter3/`](chapter3) |
-| 4 | Memory Systems — 단기/요약/장기(ChromaDB), Checkpointer | [`chapter4/`](chapter4) |
-| 5 | Context & Harness Engineering — 입력검증·구조화 출력·가드레일 | [`chapter5/`](chapter5) |
-| 6 | RAG + Agents — Agentic / Graph / Hybrid RAG | [`chapter6/`](chapter6) |
+### 3부 · 실전 프로젝트
+| 장 | 제목 | 주요 내용 | 코드 |
+|:--:|------|------|------|
+| 9 | 프로젝트: 출근하는 증권맨(정보 워크플로우 에이전트) | 지표 수집 → 종목 점검 → 뉴스 수집 → 브리핑 → 카카오톡/슬랙 전송 | [`chapter9/`](chapter9) |
+| 10 | 프로젝트: 끈질긴 주니어 데이터 분석가(자기수정 에이전트) | 생성 → 실행 → 해석 → 자기수정 루프, DuckDB·영속 커널 | [`chapter10/`](chapter10) |
+| 11 | 프로젝트: 부탁을 듣는 집사 로봇(멀티모달 에이전트) | 비전 인지 → 계획 → 행동 → 재인지 루프(PyBullet) | [`chapter11/`](chapter11) |
 
-### 3부 · 프레임워크
-| 장 | 주제 | 코드 |
-|:--:|------|------|
-| 7 | Working with LangGraph — StateGraph·라우팅·HITL·스트리밍 | [`chapter7/`](chapter7) |
-| 8 | Multi-Agent Orchestration — 슈퍼바이저/워커, 핸드오프 | [`chapter8/`](chapter8) |
-
-### 4부 · 실전 프로젝트
-| 장 | 주제 | 코드 |
-|:--:|------|------|
-| 9 | The Commuting Stock Trader — 정보 워크플로우 에이전트(지표·뉴스·브리핑·발송) | [`chapter9/`](chapter9) |
-| 10 | The Persistent Junior Analyst — 자기교정 코드 실행 루프 | [`chapter10/`](chapter10) |
-| 11 | The Butler Robot — 멀티모달 인지·계획·행동(PyBullet) | [`chapter11/`](chapter11) |
-
-### 5부 · 프로덕션 배포
-| 장 | 주제 | 코드 |
-|:--:|------|------|
-| 12 | Harness Security — Prompt Injection 방어, 샌드박스 격리 | — |
-| 13 | Open-Source LLM Serving — vLLM으로 Qwen/Llama 구동, base_url 전환 | [`chapter13/`](chapter13) |
-| 14 | Deployment & Operations — FastAPI 서버, Docker, Observability | — |
+### 4부 · 프로덕션과 운영
+| 장 | 제목 | 주요 내용 | 코드 |
+|:--:|------|------|------|
+| 12 | 하네스 보안: 안전성과 가드레일 | 프롬프트 인젝션 방어, 입출력 검증, 실행 차단, 샌드박스 격리 | — |
+| 13 | 비용과 보안을 위한 오픈소스 LLM 서빙 | vLLM·PagedAttention, Qwen2.5·Llama 3.1 서빙, 로컬 에이전트 전환, Prefix Caching | [`chapter13/`](chapter13) |
+| 14 | 배포와 운영 | FastAPI 에이전트 서버, AWS Lambda 서버리스 배포, 관측성·비용 모니터링 | — |
 
 ---
 
@@ -82,20 +76,20 @@ python chapter11/graph.py
 
 대부분의 장은 루트 `requirements.txt`로 충분하지만, 다음 장은 추가 설치가 필요합니다.
 
-- **10장 — 데이터 분석가 (The Persistent Junior Analyst)**
+- **10장 — 끈질긴 주니어 데이터 분석가**
   DuckDB·실행 커널 등.
   ```bash
   pip install -r chapter10/requirements.txt
   ```
 
-- **11장 — 집사 로봇 (The Butler Robot)**
+- **11장 — 부탁을 듣는 집사 로봇**
   PyBullet 물리 시뮬레이터가 필요합니다(macOS Apple Silicon 빌드 안내 포함).
   ```bash
   pip install -r chapter11/requirements.txt
   ```
   설치/뷰어 안내는 [`chapter11/README.md`](chapter11/README.md) 참고 — `ROBOT_GUI=1 python graph.py`로 실시간 3D 뷰어 실행.
 
-- **13장 — 오픈소스 LLM 서빙 (Open-Source LLM Serving)**
+- **13장 — 비용과 보안을 위한 오픈소스 LLM 서빙**
   vLLM과 **NVIDIA GPU**가 필요합니다(예: RTX 3090). 서버 기동 후 에이전트의 `base_url`만 로컬 모델로 바꿉니다.
   ```bash
   pip install -r chapter13/requirements.txt

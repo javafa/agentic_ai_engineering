@@ -1,6 +1,6 @@
-# Agentic AI Engineering
+<h1><small><small><small><small>하네스 엔지니어링으로 완성하는</small></small></small></small> 에이전틱 AI</h1>
 
-> 도서 **『Agentic AI Engineering』**의 장별 실습 코드입니다. **Claude(Anthropic) + LangGraph** 중심.
+> 도서 **『하네스 엔지니어링으로 완성하는 에이전틱 AI』**의 장별 실습 코드입니다. **Claude(Anthropic) + LangGraph** 중심.
 
 코드 폴더 `chapterN/`은 책의 **N장**과 1:1로 대응합니다.
 

@@ -1,4 +1,4 @@
-<h1><small><small><small><small>하네스 엔지니어링으로 완성하는</small></small></small></small> 에이전틱 AI</h1>
+<h1>하네스 엔지니어링으로 완성하는 에이전틱 AI</h1>
 
 > 도서 **『하네스 엔지니어링으로 완성하는 에이전틱 AI』**의 장별 실습 코드입니다. **Claude(Anthropic) + LangGraph** 중심.
 
